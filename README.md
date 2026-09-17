@@ -1,4 +1,4 @@
 # COSC-310-project
 
 ## Food delivery app
-## group members Ben, Manhar, Kai, max
+## group members Ben, Manhar, Kai, Max
