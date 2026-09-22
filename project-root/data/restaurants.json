@@ -1,0 +1,10 @@
+{
+    "restaurants":[
+            {
+                "Name": "ResName",
+                "Cuisine": "ResCuisine",
+                "Address": "ResAddress",
+                "Hours": "ResHours"
+            }
+    ]
+}
