@@ -1,36 +1,124 @@
 {
-    "restaurants": [
+  "restaurants": [
+    {
+      "id": 1,
+      "Name": "Waterfront Wines",
+      "Cuisine": "Farm-to-Table",
+      "Address": "1180 Sunset Dr #104, Kelowna, BC",
+      "Hours": "5:00 PM - 10:00 PM",
+      "Photos": [],
+      "menu": [
         {
-            "id": 1,
-            "Name": "Waterfront Wines",
-            "Cuisine": "Farm-to-Table",
-            "Address": "1180 Sunset Dr #104, Kelowna, BC",
-            "Hours": "5:00 PM - 10:00 PM",
-            "Photos": []
+          "name": "Grilled Salmon",
+          "price": 32.00,
+          "availability": true
         },
         {
-            "id": 2,
-            "Name": "Bohemian Cafe",
-            "Cuisine": "Breakfast & Brunch",
-            "Address": "572 Bernard Ave, Kelowna, BC",
-            "Hours": "7:00 AM - 2:30 PM",
-            "Photos": []
+          "name": "Beef Tenderloin",
+          "price": 42.00,
+          "availability": true
         },
         {
-            "id": 3,
-            "Name": "HUMO Izakaya",
-            "Cuisine": "Japanese / Latin Contemporary",
-            "Address": "210 Lawrence Ave, Kelowna, BC",
-            "Hours": "4:30 PM - 11:00 PM",
-            "Photos": []
+          "name": "Seasonal Vegetable Risotto",
+          "price": 28.00,
+          "availability": true
         },
         {
-            "id": 4,
-            "Name": "Antico Pizza Napoletana",
-            "Cuisine": "Italian / Pizza",
-            "Address": "347 Lawrence Ave, Kelowna, BC",
-            "Hours": "11:30 AM - 9:00 PM",
-            "Photos": []
+          "name": "Duck Confit",
+          "price": 36.00,
+          "availability": false
         }
-    ]
+      ]
+    },
+    {
+      "id": 2,
+      "Name": "Bohemian Cafe",
+      "Cuisine": "Breakfast & Brunch",
+      "Address": "572 Bernard Ave, Kelowna, BC",
+      "Hours": "7:00 AM - 2:30 PM",
+      "Photos": [],
+      "menu": [
+        {
+          "name": "Classic Eggs Benedict",
+          "price": 18.00,
+          "availability": true
+        },
+        {
+          "name": "French Toast",
+          "price": 16.00,
+          "availability": true
+        },
+        {
+          "name": "Breakfast Burrito",
+          "price": 17.00,
+          "availability": true
+        },
+        {
+          "name": "Blueberry Pancakes",
+          "price": 15.00,
+          "availability": false
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "Name": "HUMO Izakaya",
+      "Cuisine": "Japanese / Latin Contemporary",
+      "Address": "210 Lawrence Ave, Kelowna, BC",
+      "Hours": "4:30 PM - 11:00 PM",
+      "Photos": [],
+      "menu": [
+        {
+          "name": "Tonkotsu Ramen",
+          "price": 22.00,
+          "availability": true
+        },
+        {
+          "name": "Chicken Karaage",
+          "price": 15.00,
+          "availability": true
+        },
+        {
+          "name": "Tuna Tostada",
+          "price": 18.00,
+          "availability": true
+        },
+        {
+          "name": "Miso Black Cod",
+          "price": 29.00,
+          "availability": false
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "Name": "Antico Pizza Napoletana",
+      "Cuisine": "Italian / Pizza",
+      "Address": "347 Lawrence Ave, Kelowna, BC",
+      "Hours": "11:30 AM - 9:00 PM",
+      "Photos": [],
+      "menu": [
+        {
+          "name": "Margherita Pizza",
+          "price": 18.00,
+          "availability": true
+        },
+        {
+          "name": "Pepperoni Pizza",
+          "price": 21.00,
+          "availability": true
+        },
+        {
+          "name": "Prosciutto Pizza",
+          "price": 23.00,
+          "availability": true
+        },
+        {
+          "name": "Four Cheese Pizza",
+          "price": 22.00,
+          "availability": false
+        }
+      ]
+    }
+  ]
 }
