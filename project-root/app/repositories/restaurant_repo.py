@@ -1,5 +1,5 @@
 import json
-from pathLib import path
+from pathlib import path
 
 class resRepo:
     def __init__(self, file_path: str="data/restaurant.json"):
