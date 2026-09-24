@@ -1,14 +1,14 @@
 import json
-from pathlib import path
+from pathlib import Path
 
 class resRepo:
     def __init__(self, file_path: str="data/restaurant.json"):
-        self.file_path = Path(file_path)
+        self.file_path: Path = Path(file_path)
         
         
     def get_all_restaurants(self) -> list:
         if not self.file_path.exists(): return []
         with open(self.file_path, "r") as f:
             data = json.load(f)
-            return data.get(restaurants, [])
+            return data.get("restaurants", [])
         
