@@ -7,6 +7,11 @@ class restaurant_model(BaseModel):
     Cuisine:str
     Address:str
     Hours:str
-    #Photos: list[Str] = [] #is the list arg supposed to be Str or str?
-    menu: list[dict] = []
+    Photos: list[str] = [] #is the list arg supposed to be Str or str?
+    menu: list[menu_model] = []
+
+class menu_model(BaseModel):
+    name : str
+    price: float
+    availability: bool
     
