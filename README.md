@@ -28,7 +28,7 @@ pip install -r requirements.txt
 ### How to start the application
 
 ```bash
-run uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
+uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
 
 ### API Endpoint Paths
 
