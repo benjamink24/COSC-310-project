@@ -1,7 +1,7 @@
 
 # Food-Delivery Application
 
-## Team Name: $\pi$thon
+## Team Name: πthon
 
 ### Required Python Version
 
