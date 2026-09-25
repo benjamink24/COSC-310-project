@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from api.routes.restaurant_endpoints import router as restaurant_router
+from app.api.routes.restaurant_endpoints import router as restaurant_router
 
 app = FastAPI()
 

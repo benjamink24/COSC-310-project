@@ -1,4 +1,4 @@
-from repositories.restaurant_repo import resRepo
+from app.repositories.restaurant_repo import resRepo
 class resService:
     def __init__(self, repo: resRepo = resRepo()):
         self.repo = repo

@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 
 class resRepo:
-    def __init__(self, file_path: str="../data/restaurants.json"):
+    def __init__(self, file_path: str="./data/restaurants.json"):
         self.file_path: Path = Path(file_path)
         
         
