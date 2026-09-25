@@ -4,5 +4,5 @@ class resService:
         self.repo = repo
         
     def get_restaurants(self) -> list:
-        return self.repo.get_all_restaurants
+        return self.repo.get_all_restaurants()
     
