@@ -9,10 +9,13 @@ class menu_model(BaseModel):
 
 
 class restaurant_model(BaseModel):
-    id: int
+    #id: int
     Name: str
     Cuisine: str
     Address: str
     Hours: str
-    Photos: list[str] = []  # is the list arg supposed to be Str or str?
-    menu: list[menu_model] = []
+   # Photos: list[str] = []  # is the list arg supposed to be Str or str?
+    #menu: list[menu_model] = []
+
+class restaurant_name_model(BaseModel):
+     Name: str
