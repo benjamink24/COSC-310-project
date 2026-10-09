@@ -3,9 +3,9 @@ from typing import List
 
 
 class menu_model(BaseModel):
-    name: str
-    price: float
-    availability: bool
+    Name: str
+    Price: float
+    Availability: bool
 
 
 class restaurant_model(BaseModel):
@@ -14,5 +14,5 @@ class restaurant_model(BaseModel):
     Cuisine: str
     Address: str
     Hours: str
-    Photos: list[str] = []  # is the list arg supposed to be Str or str?
+    Photos: list[str] = []
     menu: list[menu_model] = []
