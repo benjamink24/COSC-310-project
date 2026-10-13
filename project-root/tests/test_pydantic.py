@@ -11,7 +11,7 @@ def test_restaurant_model_validity():
         "Address": "1180 Sunset Dr #104, Kelowna, BC",
         "Hours": "5:00 PM - 10:00 PM",
         "Photos": [],
-        "menu": [{"name": "Grilled Salmon", "price": 32.00, "availability": True}],
+        "menu": [{"Name": "Grilled Salmon", "Price": 32.00, "Availability": True}],
     }
     model = restaurant_model(**valid_data)
     assert model.id == 1
