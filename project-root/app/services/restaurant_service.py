@@ -48,5 +48,32 @@ class resService:
                     filtered_restaurants.append(i)
             return filtered_restaurants
                     
-    
+    def get_restaurant_by_id(self, restaurant_id: int) -> dict | None:
+        for r in self.repo.get_all_restaurants():
+            if int(r.get("id", -1)) == restaurant_id:
+                return r
+        return None
+
+    def get_menu_by_restaurant_id(self, restaurant_id: int) -> dict | None:
+        r = self.get_restaurant_by_id(restaurant_id)
+        if r is None:
+            return None
+        items = [
+            {"id": position, **item}
+            for position, item in enumerate(r.get("menu", []), start=1)
+        ]
+        return {
+            "restaurant_id": r["id"],
+            "restaurant_name": r["Name"],
+            "items": items,
+        }
+
+    def get_menu_item_by_id(self, restaurant_id: int, item_id: int) -> dict | None:
+        menu = self.get_menu_by_restaurant_id(restaurant_id)
+        if menu is None:
+            return None
+        for item in menu["items"]:
+            if item["id"] == item_id:
+                return item
+        return None
 
