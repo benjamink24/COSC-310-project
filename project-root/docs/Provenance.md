@@ -14,4 +14,6 @@
 
 7. max used ai to revise his in test_health.py (test_health)as there was an error in his code. he inputed his code into claude and it refactored the test method. after the refactoring the test ran and succesed. the test was later validated by other team members revising the added assertion. pr 26
 
-9. max used ai create and understand MockRepo in test_restaurant_details_endpoints as well as creation and understanding of some of the tests to ensure thorough testing. all tests now pass and are run form their own repository. pr 85
+8. max used ai create and understand MockRepo in test_restaurant_details_endpoints as well as creation and understanding of some of the tests to ensure thorough testing. all tests now pass and are run form their own repository. pr 85
+
+9. Manhar used AI to write the tests for project-root\tests\test_create_and_update_menu.py, project-root\tests\test_create_and_update_restaurant.py pr 84
