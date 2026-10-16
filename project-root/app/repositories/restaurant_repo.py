@@ -16,34 +16,33 @@ class resRepo:
                 return data
             return data.get("restaurants", [])
 
-####
-    def get_restaurants_by_name(self, restaurant_name : str ) -> list:
-                restaurats_list = self.get_all_restaurants()
-                for i in restaurats_list:
-                     if i["Name"].lower() == restaurant_name.strip().lower():
-                          return i
-                
-                return None
-    
-    def get_menu_items(self, restaurant_name: str, menu_item: str) -> dict | None:
-        r = self.get_restaurants_by_name(restaurant_name)
-        if r is None:
-            return None
-        target = menu_item.strip().lower()
-        for item in r.get("menu", []):
-            if str(item.get("Name", "")).strip().lower() == target:
-                return item
+    ####
+    def get_restaurants_by_name(self, restaurant_name: str) -> list:
+        restaurats_list = self.get_all_restaurants()
+        for i in restaurats_list:
+            if i["Name"].lower() == restaurant_name.strip().lower():
+                return i
+
         return None
-                                    
-                         
-    def get_restaurants_by_cuisine_type(self, cuisine_type : str ) -> list:
-                restaurats_list = self.get_all_restaurants()
-                filtered_restaurants = []
-                for i in restaurats_list:
-                    if i["Cuisine"].lower() == cuisine_type.lower():
-                        filtered_restaurants.append(i)
-                return filtered_restaurants
-####
+
+    def get_menu_items(self, restaurant_name: str, menu_item: str) -> list:
+        restaurats_list = self.get_all_restaurants()
+        for i in restaurats_list:
+            if i["Name"].lower() == restaurant_name.lower():
+                for j in i["menu"]:
+                    if j["Name"].lower() == menu_item.lower():
+                        return j
+        return None
+
+    def get_restaurants_by_cuisine_type(self, cuisine_type: str) -> list:
+        restaurats_list = self.get_all_restaurants()
+        filtered_restaurants = []
+        for i in restaurats_list:
+            if i["Cuisine"].lower() == cuisine_type.lower():
+                filtered_restaurants.append(i)
+        return filtered_restaurants
+
+    ####
     def save_all(self, data):
         self.file_path.parent.mkdir(parents=True, exist_ok=True)
         with open(self.file_path, "w", encoding="utf-8") as f:
@@ -55,52 +54,42 @@ class resRepo:
         self.save_all(restaurants)
         return res_dict
 
-    def update_res(self, id: int, update_data: dict):
+    def update_res(self, res_name: str, update_data: dict):
         restaurants = self.get_all_restaurants()
         for r in restaurants:
-            # Safely cast both to int so type mismatches don't cause a 404
-            if int(r.get("id", -1)) == int(id):
+            current_name = r.get("Name")
+            if str(current_name).strip().lower() == str(res_name).strip().lower():
                 r.update(update_data)
                 self.save_all(restaurants)
                 return r
         return None
 
-    def add_menu_item(self, id: int, menu_item_dict: dict):
+    def add_menu_item(self, res_name: str, menu_item_dict: dict):
         restaurants = self.get_all_restaurants()
         for r in restaurants:
-            if int(r.get("id", -1)) == int(id):
-                if "menu" not in r:
+            current_res_name = r.get("Name") or r.get("name", "")
+            if str(current_res_name).strip().lower() == str(res_name).strip().lower():
+                if "menu" not in r or r["menu"] is None:
                     r["menu"] = []
                 r["menu"].append(menu_item_dict)
                 self.save_all(restaurants)
                 return r
         return None
 
-    def update_menu_item(self, rest_id: int, item_name: str, update_data: dict):
+    def update_menu_item(self, res_name: str, item_name: str, update_data: dict):
         restaurants = self.get_all_restaurants()
 
-        print(f"Looking for Restaurant ID: {rest_id}, Menu Item: {item_name}")
-        print(f"Loaded restaurants: {restaurants}")
-
         for r in restaurants:
-            raw_id = r.get("id") if r.get("id") is not None else r.get("Id")
-            if raw_id is not None:
-                try:
-                    if int(raw_id) == int(rest_id):
-                        menu = r.get("menu") or []
-                        for item in menu:
-                            current_name = (
-                                item.get("Name")
-                                if item.get("Name") is not None
-                                else item.get("Name", "")
-                            )
-                            if (
-                                str(current_name).strip().lower()
-                                == str(item_name).strip().lower()
-                            ):
-                                item.update(update_data)
-                                self.save_all(restaurants)
-                                return r
-                except (ValueError, TypeError):
-                    continue
+            current_res_name = r.get("Name") or r.get("name", "")
+            if str(current_res_name).strip().lower() == str(res_name).strip().lower():
+                menu = r.get("menu") or []
+                for item in menu:
+                    current_item_name = item.get("Name") or item.get("name", "")
+                    if (
+                        str(current_item_name).strip().lower()
+                        == str(item_name).strip().lower()
+                    ):
+                        item.update(update_data)
+                        self.save_all(restaurants)
+                        return r
         return None
