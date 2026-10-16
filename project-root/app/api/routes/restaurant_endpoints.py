@@ -58,7 +58,7 @@ def update_menu_item(rest_id: int, item_name: str, menu_item_update: menu_model)
     responses={404: {"model": error_response_model, "description": "Restaurant not found"}},
 )
 def view_restaurant_details(restaurant_name: str):
-    result = restaurant.find_restaurant_by_name(restaurant_name)
+    result = restaurant.get_restaurants_by_name(restaurant_name)
     if result is None:
         raise HTTPException(status_code=404, detail="Restaurant not found")
     return result
@@ -72,25 +72,22 @@ def view_restaurant_details(restaurant_name: str):
     responses={404: {"model": error_response_model, "description": "Restaurant not found"}},
 )
 def view_restaurant_menu(restaurant_name: str):
-    result = restaurant.find_restaurant_by_name(restaurant_name)
+    result = restaurant.get_restaurants_by_name(restaurant_name)
     if result is None:
         raise HTTPException(status_code=404, detail="Restaurant not found")
     return result.get("menu", [])
 
 
 @router.get(
-    "/{restaurant_name}/menu/{menu_item}",
-    response_model=menu_model,
-    summary="Get one menu item",
-    description="Returns a single menu item of the restaurant, looked up by item name (case-insensitive).",
-    responses={
-        404: {"model": error_response_model, "description": "Restaurant or menu item not found"}
+    "/{restaurant_name}/menu/{menu_item}",response_model=menu_model,
+    summary="Get one menu item",  description="Returns a single menu item of the restaurant, looked up by item name (case-insensitive).",
+    responses={ 404: {"model": error_response_model, "description": "Restaurant or menu item not found"}
     },
 )
 def view_restaurant_menu_item(restaurant_name: str, menu_item: str):
-    if restaurant.find_restaurant_by_name(restaurant_name) is None:
+    if restaurant.get_restaurants_by_name(restaurant_name) is None:
         raise HTTPException(status_code=404, detail="Restaurant not found")
-    item = restaurant.find_menu_item_by_name(restaurant_name, menu_item)
+    item = restaurant.get_menu_items(restaurant_name, menu_item)
     if item is None:
         raise HTTPException(status_code=404, detail="Menu item not found")
     return item
