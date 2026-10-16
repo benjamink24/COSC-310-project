@@ -16,6 +16,32 @@ class resRepo:
                 return data
             return data.get("restaurants", [])
 
+####
+    def get_restaurants_by_name(self, restaurant_name : str ) -> list:
+                restaurats_list = self.get_all_restaurants()
+                for i in restaurats_list:
+                     if i["Name"].lower() == restaurant_name.lower():
+                          return i
+                     #else:
+                        #throw error
+    
+    def get_menu_items(self, restaurant_name : str , menu_item: str) -> list:
+                    restaurats_list = self.get_all_restaurants()
+                    for i in restaurats_list:
+                         if i["Name"].lower() == restaurant_name.lower():
+                               for j in i["menu"]:
+                                     if j["Name"].lower() == menu_item.lower():
+                                           return j
+                                    
+                         
+    def get_restaurants_by_cuisine_type(self, cuisine_type : str ) -> list:
+                restaurats_list = self.get_all_restaurants()
+                filtered_restaurants = []
+                for i in restaurats_list:
+                    if i["Cuisine"].lower() == cuisine_type.lower():
+                        filtered_restaurants.append(i)
+                return filtered_restaurants
+####
     def save_all(self, data):
         self.file_path.parent.mkdir(parents=True, exist_ok=True)
         with open(self.file_path, "w", encoding="utf-8") as f:
@@ -62,8 +88,8 @@ class resRepo:
                         menu = r.get("menu") or []
                         for item in menu:
                             current_name = (
-                                item.get("name")
-                                if item.get("name") is not None
+                                item.get("Name")
+                                if item.get("Name") is not None
                                 else item.get("Name", "")
                             )
                             if (

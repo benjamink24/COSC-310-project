@@ -9,7 +9,7 @@ class menu_model(BaseModel):
 
 
 class restaurant_model(BaseModel):
-    #id: int
+    id: int
     Name: str
     Cuisine: str
     Address: str
@@ -20,6 +20,7 @@ class restaurant_model(BaseModel):
 
 class restaurant_name_model(BaseModel):
      Name: str
+     id: int
 
 class restaurant_details_model(BaseModel):
     """Restaurant details: name, cuisine, address and hours only."""    
