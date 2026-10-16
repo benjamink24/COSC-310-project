@@ -18,6 +18,11 @@ class restaurant_model(BaseModel):
     menu: list[menu_model] = [] 
 
 
+class restaurant_name_cuisine_model(BaseModel):
+     Name: str
+     Cuisine: str
+     id: int
+
 class restaurant_name_model(BaseModel):
      Name: str
      id: int

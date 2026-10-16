@@ -9,7 +9,7 @@ restaurant: resService = resService()
 
 
 # 1. GET all restaurants (Working)
-@router.get("/",response_model = list[restaurant_name_model])
+@router.get("/",response_model = list[restaurant_name_cuisine_model])
 def list_restaurants():
     restaurant_list= restaurant.get_restaurants()
     return restaurant_list
@@ -94,7 +94,7 @@ def view_restaurant_menu_item(restaurant_name: str, menu_item: str):
 
 
 
-@router.get("/filter/{cuisine_type}", response_model= list[restaurant_name_model])
+@router.get("/filter/{cuisine_type}", response_model= list[restaurant_name_model],responses={ 404: {"model": error_response_model, "description": "Restaurant or menu item not found"}})
 def filter_restaurants(cuisine_type: str):
     return restaurant.get_restaurants_by_cuisine_type(cuisine_type)
     
