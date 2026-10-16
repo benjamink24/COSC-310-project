@@ -13,3 +13,5 @@
 6. max used ai to generate the COSC-310-project\project-root\conftest.py artifact the purpose was to make our testing posible in the termial. the influence only pytest needs to be run in the terminal to run tests. verifacation the result succeded and tests can be run simply. pr 33
 
 7. max used ai to revise his in test_health.py (test_health)as there was an error in his code. he inputed his code into claude and it refactored the test method. after the refactoring the test ran and succesed. the test was later validated by other team members revising the added assertion. pr 26
+
+8. Manhar used AI to write the tests for project-root\tests\test_create_and_update_menu.py, project-root\tests\test_create_and_update_restaurant.py
