@@ -56,53 +56,46 @@ def update_menu_item(rest_id: int, item_name: str, menu_item_update: menu_model)
 
 
 @router.get(
-    "/{restaurant_id}",
+    "/{restaurant_name}",
     response_model=restaurant_details_model,
     summary="Get restaurant details",
-    description="Returns the name, cuisine, address, hours and photos of one restaurant.",
+    description="Returns the name, cuisine, address and hours of one restaurant, looked up by name (case-insensitive).",
     responses={404: {"model": error_response_model, "description": "Restaurant not found"}},
 )
-def view_restaurant_details(restaurant_id: int):
-    result = restaurant.get_restaurant_by_id(restaurant_id)
+def view_restaurant_details(restaurant_name: str):
+    result = restaurant.find_restaurant_by_name(restaurant_name)
     if result is None:
         raise HTTPException(status_code=404, detail="Restaurant not found")
     return result
 
 
 @router.get(
-    "/{restaurant_id}/menu",
-    response_model=menu_response_model,
+    "/{restaurant_name}/menu",
+    response_model=list[menu_model],
     summary="Get a restaurant's menu",
-    description="Returns every menu item of the restaurant, each with its item id.",
+    description="Returns every menu item of the restaurant.",
     responses={404: {"model": error_response_model, "description": "Restaurant not found"}},
 )
-def view_restaurant_menu(restaurant_id: int):
-    result = restaurant.get_menu_by_restaurant_id(restaurant_id)
+def view_restaurant_menu(restaurant_name: str):
+    result = restaurant.find_restaurant_by_name(restaurant_name)
     if result is None:
         raise HTTPException(status_code=404, detail="Restaurant not found")
-    return result
+    return result.get("menu", [])
 
 
 @router.get(
-    "/{restaurant_id}/menu/{item_id}",
-    response_model=menu_item_model,
+    "/{restaurant_name}/menu/{menu_item}",
+    response_model=menu_model,
     summary="Get one menu item",
-    description="Returns a single menu item identified by its id within the restaurant's menu.",
+    description="Returns a single menu item of the restaurant, looked up by item name (case-insensitive).",
     responses={
         404: {"model": error_response_model, "description": "Restaurant or menu item not found"}
     },
 )
-def view_restaurant_menu_item(restaurant_id: int, item_id: int):
-    if restaurant.get_restaurant_by_id(restaurant_id) is None:
+def view_restaurant_menu_item(restaurant_name: str, menu_item: str):
+    if restaurant.find_restaurant_by_name(restaurant_name) is None:
         raise HTTPException(status_code=404, detail="Restaurant not found")
-    item = restaurant.get_menu_item_by_id(restaurant_id, item_id)
+    item = restaurant.find_menu_item_by_name(restaurant_name, menu_item)
     if item is None:
         raise HTTPException(status_code=404, detail="Menu item not found")
     return item
-    
-
-@router.get("/filter/{cuisine_type}", response_model= list[restaurant_name_model])
-def filter_restaurants(cuisine_type: str):
-    return restaurant.get_restaurants_by_cuisine_type(cuisine_type)
-    
-

@@ -1,3 +1,5 @@
+from http.client import HTTPException
+
 import pytest
 from fastapi.testclient import TestClient
 
@@ -33,62 +35,51 @@ def client(monkeypatch):
 # --- Restaurant details ---
 
 def test_get_valid_restaurant(client):
-    response = client.get("/restaurants/1")
-    assert response.status_code == 200
-    body = response.json()
-    assert body["Name"] == "Waterfront Wines"
-    assert body["Cuisine"] == "Farm-to-Table"
-    assert body["Address"] == "1180 Sunset Dr #104, Kelowna, BC"
-    assert body["Hours"] == "5:00 PM - 10:00 PM"
-    assert "id" not in body
-    assert "menu" not in body
-    assert "Photos" not in body
-
-
-def test_get_invalid_restaurant(client):
-    response = client.get("/restaurants/999")
-    assert response.status_code == 404
-    assert response.json()["detail"] == "Restaurant not found"
-
-
-# --- Menu ---
-
-def test_get_valid_menu(client):
-    response = client.get("/restaurants/1/menu")
-    assert response.status_code == 200
-    body = response.json()
-    assert body["restaurant_id"] == 1
-    assert body["restaurant_name"] == "Waterfront Wines"
-    assert [item["id"] for item in body["items"]] == [1, 2]
-    assert body["items"][0]["Name"] == "Grilled Salmon"
-
-
-def test_get_menu_invalid_restaurant(client):
-    response = client.get("/restaurants/999/menu")
-    assert response.status_code == 404
-    assert response.json()["detail"] == "Restaurant not found"
-
-
-# --- Menu item ---
-
-def test_get_valid_menu_item(client):
-    response = client.get("/restaurants/1/menu/2")
+    response = client.get("/restaurants/Waterfront Wines")
     assert response.status_code == 200
     assert response.json() == {
-        "id": 2,
-        "Name": "Duck Confit",
-        "Price": 36.0,
-        "Availability": False,
+        "Name": "Waterfront Wines",
+        "Cuisine": "Farm-to-Table",
+        "Address": "1180 Sunset Dr #104, Kelowna, BC",
+        "Hours": "5:00 PM - 10:00 PM",
     }
 
 
+def test_restaurant_name_is_case_insensitive(client):
+    assert client.get("/restaurants/waterfront wines").status_code == 200
+
+
+def test_get_invalid_restaurant(client):
+    response = client.get("/restaurants/Nonexistent Place")
+    assert response.status_code == 404
+    assert response.json()["detail"] == "Restaurant not found"
+
+
+def test_get_valid_menu(client):
+    response = client.get("/restaurants/Waterfront Wines/menu")
+    assert response.status_code == 200
+    body = response.json()
+    assert len(body) == 2
+    assert body[0] == {"Name": "Grilled Salmon", "Price": 32.0, "Availability": True}
+
+
+def test_get_menu_invalid_restaurant(client):
+    assert client.get("/restaurants/Nonexistent Place/menu").status_code == 404
+
+
+def test_get_valid_menu_item(client):
+    response = client.get("/restaurants/Waterfront Wines/menu/Duck Confit")
+    assert response.status_code == 200
+    assert response.json() == {"Name": "Duck Confit", "Price": 36.0, "Availability": False}
+
+
 def test_get_invalid_menu_item(client):
-    response = client.get("/restaurants/1/menu/99")
+    response = client.get("/restaurants/Waterfront Wines/menu/Pizza")
     assert response.status_code == 404
     assert response.json()["detail"] == "Menu item not found"
 
 
 def test_get_menu_item_invalid_restaurant(client):
-    response = client.get("/restaurants/999/menu/1")
+    response = client.get("/restaurants/Nonexistent Place/menu/Duck Confit")
     assert response.status_code == 404
     assert response.json()["detail"] == "Restaurant not found"
