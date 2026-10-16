@@ -34,7 +34,7 @@ class resService:
                 for i in restaurats_list:
                      if i["Name"].lower() == restaurant_name.lower():
                            for j in i["menu"]:
-                                 if j["name"].lower() == menu_item.lower():
+                                 if j["Name"].lower() == menu_item.lower():
                                        return j
                                 
                      #else:if

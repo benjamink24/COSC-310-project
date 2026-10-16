@@ -136,6 +136,11 @@
                 "Name": "pizza",
                 "Price": 12.5,
                 "Availability": true
+            },
+            {
+                "Name": "string",
+                "Price": 0.0,
+                "Availability": true
             }
         ]
     },
@@ -146,6 +151,12 @@
         "Address": "string",
         "Hours": "string",
         "Photos": [],
-        "menu": []
+        "menu": [
+            {
+                "Name": "pizza",
+                "Price": 660.0,
+                "Availability": true
+            }
+        ]
     }
 ]
