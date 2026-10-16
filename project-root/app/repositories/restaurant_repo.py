@@ -25,14 +25,15 @@ class resRepo:
                 
                 return None
     
-    def get_menu_items(self, restaurant_name : str , menu_item: str) -> list:
-                    restaurats_list = self.get_all_restaurants()
-                    for i in restaurats_list:
-                         if i["Name"].lower() == restaurant_name.lower():
-                               for j in i["menu"]:
-                                     if j["Name"].lower() == menu_item.lower():
-                                           return j
-                    return None
+    def get_menu_items(self, restaurant_name: str, menu_item: str) -> dict | None:
+        r = self.get_restaurants_by_name(restaurant_name)
+        if r is None:
+            return None
+        target = menu_item.strip().lower()
+        for item in r.get("menu", []):
+            if str(item.get("Name", "")).strip().lower() == target:
+                return item
+        return None
                                     
                          
     def get_restaurants_by_cuisine_type(self, cuisine_type : str ) -> list:
