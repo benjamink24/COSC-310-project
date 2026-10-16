@@ -62,8 +62,8 @@ class resRepo:
                         menu = r.get("menu") or []
                         for item in menu:
                             current_name = (
-                                item.get("name")
-                                if item.get("name") is not None
+                                item.get("Name")
+                                if item.get("Name") is not None
                                 else item.get("Name", "")
                             )
                             if (
