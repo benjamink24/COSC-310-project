@@ -20,10 +20,10 @@ class resRepo:
     def get_restaurants_by_name(self, restaurant_name : str ) -> list:
                 restaurats_list = self.get_all_restaurants()
                 for i in restaurats_list:
-                     if i["Name"].lower() == restaurant_name.lower():
+                     if i["Name"].lower() == restaurant_name.strip().lower():
                           return i
-                     #else:
-                        #throw error
+                
+                return None
     
     def get_menu_items(self, restaurant_name : str , menu_item: str) -> list:
                     restaurats_list = self.get_all_restaurants()
@@ -32,6 +32,7 @@ class resRepo:
                                for j in i["menu"]:
                                      if j["Name"].lower() == menu_item.lower():
                                            return j
+                    return None
                                     
                          
     def get_restaurants_by_cuisine_type(self, cuisine_type : str ) -> list:
