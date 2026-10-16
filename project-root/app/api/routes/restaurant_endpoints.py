@@ -50,7 +50,7 @@ def update_menu_item(rest_id: int, item_name: str, menu_item_update: menu_model)
 
 
 
-@router.get("/{restaurant_name}", response_model=restaurant_model)
+@router.get("/{restaurant_name}", response_model=return_restaurant_model)
 def view_restaurant_details(restaurant_name : str):# create a method that returns a restraughnts deatials by name as key
     return restaurant.get_restaurants_by_name(restaurant_name)
 

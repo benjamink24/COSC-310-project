@@ -15,11 +15,19 @@ class restaurant_model(BaseModel):
     Address: str
     Hours: str
     Photos: list[str] = []
-    menu: list[menu_model] = [] #note for ben or max make new return schema that just returns name chuisine address hours
- 
-      
+    menu: list[menu_model] = [] 
+    
+class return_restaurant_model(BaseModel):
+    id: int
+    Name: str
+    Cuisine: str
+    Address: str
+    Hours: str
+    
     
 
 
 class restaurant_name_model(BaseModel):
-    Name: str
+     Name: str
+     id: int
+
