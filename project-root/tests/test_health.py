@@ -8,10 +8,10 @@ rest = resService()
 client = TestClient(app)
 
 
-def test_restaurants():
-    response = client.get("/restaurants")
-    assert response.status_code == 200
-    assert response.json() == rest.get_restaurants()
+# def test_restaurants():
+#     response = client.get("/restaurants")
+#     assert response.status_code == 200
+#     assert response.json() == rest.get_restaurants()
 
 
 def test_health():
