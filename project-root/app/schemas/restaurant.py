@@ -16,18 +16,19 @@ class restaurant_model(BaseModel):
     Hours: str
     Photos: list[str] = []
     menu: list[menu_model] = [] 
-    
-class return_restaurant_model(BaseModel):
-    id: int
-    Name: str
-    Cuisine: str
-    Address: str
-    Hours: str
-    
-    
 
 
 class restaurant_name_model(BaseModel):
      Name: str
      id: int
 
+class restaurant_details_model(BaseModel):
+    """Restaurant details: name, cuisine, address and hours only."""    
+    Name: str
+    Cuisine: str
+    Address: str
+    Hours: str
+
+class error_response_model(BaseModel):   
+    """Error body returned with 404 responses."""
+    detail: str
