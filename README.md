@@ -30,6 +30,15 @@ pip install -r requirements.txt
 ```bash
 uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
 
+### Open a new terminal window
+
+cd project-root
+
+```bash
+ python -m http.server 5500 --directory frontend
+
+ ### open http://127.0.0.1:5500/
+
 ### API Endpoint Paths
 
 | Method | Path | Description |
@@ -60,7 +69,8 @@ project-root/
 │   ├── services/
 │   ├── repositories/
 │   ├── schemas/
-│   └── main.py
+│   ├── main.py
+│   └── frontend/
 ├── data/
 │   └── restaurants.json
 ├── tests/
