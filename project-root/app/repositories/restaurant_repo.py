@@ -54,8 +54,16 @@ class resRepo:
         id_dict={"id":id}
         id_res_dict= id_dict | res_dict
         restaurants.append(id_res_dict)
+        ids = []
+        for r in restaurants:
+            if str(r.get("id", "")).isdigit():
+                ids.append(int(r["id"]))
+        next_id = max(ids) + 1 if ids else 1
+        res_dict["id"] = next_id
+        restaurants.append(res_dict)
         self.save_all(restaurants)
-        return id_res_dict#possible error in pydantic
+        
+        return res_dict
 
     def update_res(self, res_name: str, update_data: dict):
         restaurants = self.get_all_restaurants()
