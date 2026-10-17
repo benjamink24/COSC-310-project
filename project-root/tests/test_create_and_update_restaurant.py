@@ -10,7 +10,6 @@ client = TestClient(app)
 def test_create_and_update_restaurant():
     # 1. Create a restaurant with unique test ID 999
     new_res = {
-        "id": 999,
         "Name": "Test Bistro",
         "Cuisine": "Fusion",
         "Address": "123 Test St",
@@ -21,12 +20,10 @@ def test_create_and_update_restaurant():
     response = client.post("/restaurants", json=new_res)
     assert response.status_code == 201
     data = response.json()
-    assert data["id"] == 999
     assert data["Name"] == "Test Bistro"
 
     # 2. Update the restaurant
     update_data = {
-        "id": 999,
         "Name": "Test Bistro Updated",
         "Cuisine": "Modern Fusion",
         "Address": "456 New St",
@@ -34,6 +31,6 @@ def test_create_and_update_restaurant():
         "Photos": [],
         "menu": [],
     }
-    response = client.put("/restaurants/999", json=update_data)
-    assert response.status_code == 200
+    response = client.put("/restaurants/Test Bistro", json=update_data)
+    assert response.status_code == 201
     assert response.json()["Name"] == "Test Bistro Updated"

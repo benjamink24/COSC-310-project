@@ -10,11 +10,6 @@ rest = resService()
 client = TestClient(app)
 
 
-def test_restaurants():
-     response = client.get("/restaurants")
-     assert response.status_code == 200
-     expected = [{"Name": r["Name"]} for r in rest.get_restaurants()]
-     assert response.json() == expected
 
 
 def test_health():

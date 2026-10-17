@@ -68,8 +68,8 @@
         "Photos": [],
         "menu": [
             {
-                "Name": "Tonkotsu Ramen",
-                "Price": 22.0,
+                "Name": "string",
+                "Price": 0.0,
                 "Availability": true
             },
             {
@@ -161,10 +161,10 @@
     },
     {
         "id": 7,
-        "Name": "Test Bistro",
-        "Cuisine": "Fusion",
-        "Address": "123 Test St",
-        "Hours": "9:00 AM - 5:00 PM",
+        "Name": "Test Bistro Updated",
+        "Cuisine": "Modern Fusion",
+        "Address": "456 New St",
+        "Hours": "10:00 AM - 6:00 PM",
         "Photos": [],
         "menu": []
     },
@@ -191,5 +191,32 @@
         "Hours": "string",
         "Photos": [],
         "menu": []
+    },
+    {
+        "Name": "Test Bistro Updated",
+        "Cuisine": "Modern Fusion",
+        "Address": "456 New St",
+        "Hours": "10:00 AM - 6:00 PM",
+        "Photos": [],
+        "menu": [],
+        "id": 31
+    },
+    {
+        "id": 32,
+        "Name": "Test Bistro",
+        "Cuisine": "Fusion",
+        "Address": "123 Test St",
+        "Hours": "9:00 AM - 5:00 PM",
+        "Photos": [],
+        "menu": []
+    },
+    {
+        "Name": "Test Bistro",
+        "Cuisine": "Fusion",
+        "Address": "123 Test St",
+        "Hours": "9:00 AM - 5:00 PM",
+        "Photos": [],
+        "menu": [],
+        "id": 33
     }
 ]

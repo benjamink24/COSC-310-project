@@ -10,8 +10,8 @@ client = TestClient(app)
 def test_menu_operations():
     # 1. Add a menu item using capitalized keys matching menu_model
     menu_item = {"Name": "Truffle Fries", "Price": 10.50, "Availability": True}
-    response = client.post("/restaurants/999/menu", json=menu_item)
-    assert response.status_code == 200
+    response = client.post("/restaurants/Test Bistro/menu", json=menu_item)
+    assert response.status_code == 201
 
     # Verify the item is in the menu
     restaurant_data = response.json()
@@ -24,7 +24,7 @@ def test_menu_operations():
 
     # 2. Update the menu item
     updated_menu_item = {"Name": "Truffle Fries", "Price": 12.00, "Availability": False}
-    response = client.put("/restaurants/999/menu/Truffle Fries", json=updated_menu_item)
+    response = client.put("/restaurants/Test Bistro/menu/Truffle Fries", json=updated_menu_item)
     assert response.status_code == 200
 
     updated_data = response.json()
