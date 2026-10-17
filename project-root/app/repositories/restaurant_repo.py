@@ -91,11 +91,11 @@ class resRepo:
         restaurants = self.get_all_restaurants()
 
         for r in restaurants:
-            current_res_name = r.get("Name") or r.get("name", "")
+            current_res_name = r.get("Name") or r.get("Name", "")
             if str(current_res_name).strip().lower() == str(res_name).strip().lower():
                 menu = r.get("menu") or []
                 for item in menu:
-                    current_item_name = item.get("Name") or item.get("name", "")
+                    current_item_name = item.get("Name") or item.get("Name", "")
                     if (
                         str(current_item_name).strip().lower()
                         == str(item_name).strip().lower()
