@@ -50,9 +50,12 @@ class resRepo:
 
     def add_restaurants(self, res_dict: dict) -> dict:
         restaurants = self.get_all_restaurants()
-        restaurants.append(res_dict)
+        id=restaurants[-1]["id"]+1
+        id_dict={"id":id}
+        id_res_dict= id_dict | res_dict
+        restaurants.append(id_res_dict)
         self.save_all(restaurants)
-        return res_dict
+        return id_res_dict#possible error in pydantic
 
     def update_res(self, res_name: str, update_data: dict):
         restaurants = self.get_all_restaurants()

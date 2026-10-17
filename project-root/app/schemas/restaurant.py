@@ -9,13 +9,14 @@ class menu_model(BaseModel):
 
 
 class restaurant_model(BaseModel):
-    id: int
     Name: str
     Cuisine: str
     Address: str
     Hours: str
     Photos: list[str] = []
     menu: list[menu_model] = [] 
+
+
 
 
 class restaurant_name_cuisine_model(BaseModel):

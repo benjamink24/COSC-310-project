@@ -8,24 +8,30 @@ restaurant: resService = resService()
 
 # 1. GET all restaurants (Working)
 
-@router.get("/",response_model = list[restaurant_name_cuisine_model],summary="Lists restaurants",
-    description="Returns the name, cuisine, and ID of all restaurants",
-    responses={404: {"model": error_response_model, "description": "Restaurant not found"}})
+@router.get("/",
+            response_model = list[restaurant_name_cuisine_model],
+            summary="Lists restaurants",
+            description="Returns the name, cuisine, and ID of all restaurants",
+            responses={404: {"model": error_response_model, "description": "Restaurant not found"}})
 def list_restaurants():
     restaurant_list = restaurant.get_restaurants()
     return restaurant_list
 
 
 # 2. CREATE a restaurant (Working)
-@router.post("/", response_model=restaurant_model,summary="create a new reastaurant",
-    description="Creates a new restaurant in the json file from the provided data which is vetted by the pydantic model", status_code=201)
+@router.post("/", 
+             response_model=restaurant_model,
+             summary="create a new reastaurant",
+             description="Creates a new restaurant in the json file from the provided data which is vetted by the pydantic model", status_code=201)
 def create_restaurant(restaurant_data: restaurant_model):
     return restaurant.create_restaurant(restaurant_data.model_dump())
 
 
 # 3. UPDATE a restaurant (Fixes 405 if missing)
-@router.put("/{rest_name}", response_model=restaurant_model,summary="updates a reastaurant",
-    description="Updates a restaurant in the json file from the provided data which is vetted by the pydantic model",status_code=201)
+@router.put("/{rest_name}", 
+            response_model=restaurant_model,
+            summary="updates a reastaurant",
+            description="Updates a restaurant in the json file from the provided data which is vetted by the pydantic model",status_code=201)
 def update_restaurant(rest_name: str, update_data: restaurant_model):
     updated = restaurant.update_restaurant(rest_name, update_data.model_dump())
     if not updated:
@@ -34,8 +40,10 @@ def update_restaurant(rest_name: str, update_data: restaurant_model):
 
 
 # 4. ADD MENU ITEM (Fixes 405 if missing)
-@router.post("/{res_name}/menu", response_model=restaurant_model,summary="creates a menu item",
-    description="Updates a restaurant in the json file from the provided data which is vetted by the pydantic model",status_code=201)
+@router.post("/{res_name}/menu", 
+             response_model=restaurant_model,
+             summary="creates a menu item",
+             description="Updates a restaurant in the json file from the provided data which is vetted by the pydantic model",status_code=201)
 def add_menu_item(res_name: str, menu_item: menu_model):
     updated = restaurant.add_menu_item(res_name, menu_item.model_dump())
     if not updated:
@@ -43,8 +51,10 @@ def add_menu_item(res_name: str, menu_item: menu_model):
     return updated
 
 
-@router.put("/{res_name}/menu/{item_name}",summary="Updates a menu item",
-    description="Updates a menu item in the json file from the provided data which is vetted by the pydantic model", response_model=restaurant_model)
+@router.put("/{res_name}/menu/{item_name}",
+            summary="Updates a menu item",
+            description="Updates a menu item in the json file from the provided data which is vetted by the pydantic model", 
+            response_model=restaurant_model)
 def update_menu_item(res_name: str, item_name: str, menu_item_update: menu_model):
     updated = restaurant.update_menu_item(
         res_name, item_name, menu_item_update.model_dump()
@@ -84,8 +94,10 @@ def view_restaurant_menu(restaurant_name: str):
 
 
 @router.get(
-    "/{restaurant_name}/menu/{menu_item}",response_model=menu_model,
-    summary="Get one menu item",  description="Returns a single menu item of the restaurant, looked up by item name (case-insensitive).",
+    "/{restaurant_name}/menu/{menu_item}",
+    response_model=menu_model,
+    summary="Get one menu item",  
+    description="Returns a single menu item of the restaurant, looked up by item name (case-insensitive).",
     responses={ 404: {"model": error_response_model, "description": "Restaurant or menu item not found"}
     }
 )
