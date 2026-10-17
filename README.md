@@ -37,6 +37,15 @@ uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
 | GET | `/health` | Checks whether the application is running |
 | GET | `/restaurants` | Returns available restaurants |
 | GET | `/docs` | Returns documentation |
+| POST | `/restaurants` | Returns a new created restaurant |
+| PUT | `/restaurants/{rest_name}` | Returns updated restaurant |
+| POST | `/restaurants/{res_name}/menu` | Returns a new created menu item |
+| PUT | `/restaurants/{res_name}/menu{item_name}` | Returns updated menu item |
+| GET | `/restaurants/{restaurant_name}` | Returns restaurant details |
+| GET | `/restaurants/{restaurant_name}/menu` | Returns restaurant menu |
+| GET | `/restaurants/{restaurant_name}/menu/{menu_item}` | Returns one menu item |
+| GET | `/restaurants/filter/{cuisine_type}` | Returns filtered restaurants by cuisine |
+
 
 ### /docs Path
 Interactive Swagger API documentation is available at:
