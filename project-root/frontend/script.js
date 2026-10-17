@@ -634,11 +634,12 @@ async function saveMenuItem(event) {
     
     const selectedIndex = itemSelect.value;
 
-const itemName =
-    selectedIndex !== "" &&
-    restaurantSelect.value
-        ? getSelectedRestaurant()?.menu[Number(selectedIndex)]?.Name
-        : "";
+    const itemName =
+        selectedIndex !== "" &&
+        currentMenuItems &&
+        currentMenuItems[Number(selectedIndex)]
+            ? currentMenuItems[Number(selectedIndex)].Name
+            : "";
 
     const menuSaveButton = document.querySelector("#menu-form button[type='submit']") || saveButton;
 
@@ -693,7 +694,6 @@ const itemName =
                         const field = Array.isArray(error.loc)
                             ? error.loc.join(" → ")
                             : "Unknown field";
-
                         return `${field}: ${error.msg}`;
                     })
                     .join("; ");
@@ -712,15 +712,12 @@ const itemName =
             ? "Menu item added successfully!"
             : "Menu item updated successfully!";
 
-        await loadMenuRestaurants();
-        loadMenuItems();
+        // Reload the menu items dropdown with fresh server data
+        await loadMenuItems();
 
         if (operation === "create") {
             menuForm.reset();
             availabilitySelect.value = "true";
-        } else {
-            itemSelect.value = itemName;
-            selectMenuItem();
         }
 
     } catch (error) {
