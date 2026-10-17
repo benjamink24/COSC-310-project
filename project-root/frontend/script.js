@@ -17,6 +17,7 @@ const availabilitySelect = document.getElementById("menu-availability");
 const statusMessage = document.getElementById("menu-status");
 
 let allRestaurants = [];
+let currentMenuItems = [];
 
 // GET /restaurants/ - List Restaurants
 async function loadRestaurants() {
@@ -521,7 +522,6 @@ function updateMenuForm() {
     const operation = menuOperationSelect ? menuOperationSelect.value : "create";
     const isUpdate = operation === "update";
 
-    // Show/hide or enable/disable item selection dropdown
     itemSelect.style.display = isUpdate ? "block" : "none";
     itemSelect.required = isUpdate;
 
@@ -531,7 +531,6 @@ function updateMenuForm() {
             : "Add Menu Item";
     }
 
-    // Clear old values when switching operations
     nameInput.value = "";
     priceInput.value = "";
     availabilitySelect.value = "true";
@@ -541,9 +540,6 @@ function updateMenuForm() {
 }
 
 // Load menu items for the selected restaurant
-
-
-
 async function loadMenuItems() {
     const restaurantName = restaurantSelect.value;
 
@@ -668,7 +664,6 @@ async function saveMenuItem(event) {
         return;
     }
 
-    // Construct the appropriate endpoint
     let url = `${API_URL}/restaurants/${encodeURIComponent(restaurantName)}/menu`;
     let method = "POST";
 
