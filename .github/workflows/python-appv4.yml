@@ -41,4 +41,5 @@ jobs:
 
       - name: Run tests
         run: |
-          python -m pytest project-root/tests -v
+          cd project-root
+          python -m pytest -v
