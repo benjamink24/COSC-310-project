@@ -1,19 +1,19 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import List
 
 
 class menu_model(BaseModel):
-    Name: str
-    Price: float
+    Name: str  = Field(min_length=1, max_length=100)
+    Price: float = Field(ge=0, le=10000, allow_inf_nan=False)
     Availability: bool
 
 
 class restaurant_model(BaseModel):
-    Name: str
-    Cuisine: str
-    Address: str
-    Hours: str
-    Photos: list[str] = []
+    Name: str = Field(min_length=1, max_length=100)
+    Cuisine: str = Field(min_length=1, max_length=100)
+    Address: str = Field(min_length=1, max_length=100)
+    Hours: str = Field(min_length=1, max_length=100)
+    Photos: list[str] = Field(default=[], max_length=20)
     menu: list[menu_model] = [] 
 
 
