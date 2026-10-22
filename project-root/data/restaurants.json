@@ -121,102 +121,53 @@
     },
     {
         "id": 5,
-        "Name": "string",
-        "Cuisine": "string",
-        "Address": "string",
-        "Hours": "string",
+        "Name": "Test Bistro Updated",
+        "Cuisine": "Modern Fusion",
+        "Address": "456 New St",
+        "Hours": "10:00 AM - 6:00 PM",
         "Photos": [],
-        "menu": [
-            {
-                "Name": "pizza",
-                "Price": 12.5,
-                "Availability": true
-            },
-            {
-                "Name": "pizza",
-                "Price": 12.5,
-                "Availability": true
-            },
-            {
-                "Name": "string",
-                "Price": 0.0,
-                "Availability": true
-            }
-        ]
+        "menu": []
     },
     {
         "id": 6,
-        "Name": "string",
-        "Cuisine": "string",
-        "Address": "string",
-        "Hours": "string",
+        "Name": "Test Bistro",
+        "Cuisine": "Fusion",
+        "Address": "123 Test St",
+        "Hours": "9:00 AM - 5:00 PM",
         "Photos": [],
         "menu": [
             {
-                "Name": "pizza",
-                "Price": 660.0,
-                "Availability": true
+                "Name": "Truffle Fries",
+                "Price": 12.0,
+                "Availability": false
             }
         ]
     },
     {
         "id": 7,
-        "Name": "Test Bistro Updated",
-        "Cuisine": "Modern Fusion",
-        "Address": "456 New St",
-        "Hours": "10:00 AM - 6:00 PM",
+        "Name": "Test Bistro",
+        "Cuisine": "Fusion",
+        "Address": "123 Test St",
+        "Hours": "9:00 AM - 5:00 PM",
         "Photos": [],
         "menu": []
     },
     {
         "id": 8,
-        "Name": "bye",
-        "Cuisine": "string",
-        "Address": "string",
-        "Hours": "string",
+        "Name": "Test Bistro",
+        "Cuisine": "Fusion",
+        "Address": "123 Test St",
+        "Hours": "9:00 AM - 5:00 PM",
         "Photos": [],
-        "menu": [
-            {
-                "Name": "ahhhhh",
-                "Price": 0.0,
-                "Availability": true
-            }
-        ]
+        "menu": []
     },
     {
         "id": 9,
-        "Name": "1001",
-        "Cuisine": "string",
-        "Address": "string",
-        "Hours": "string",
-        "Photos": [],
-        "menu": []
-    },
-    {
-        "Name": "Test Bistro Updated",
-        "Cuisine": "Modern Fusion",
-        "Address": "456 New St",
-        "Hours": "10:00 AM - 6:00 PM",
-        "Photos": [],
-        "menu": [],
-        "id": 31
-    },
-    {
-        "id": 32,
         "Name": "Test Bistro",
         "Cuisine": "Fusion",
         "Address": "123 Test St",
         "Hours": "9:00 AM - 5:00 PM",
         "Photos": [],
         "menu": []
-    },
-    {
-        "Name": "Test Bistro",
-        "Cuisine": "Fusion",
-        "Address": "123 Test St",
-        "Hours": "9:00 AM - 5:00 PM",
-        "Photos": [],
-        "menu": [],
-        "id": 33
     }
 ]

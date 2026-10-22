@@ -31,6 +31,6 @@ def test_create_and_update_restaurant():
         "Photos": [],
         "menu": [],
     }
-    response = client.put("/restaurants/Test Bistro", json=update_data)
+    response = client.put("/restaurants/5", json=update_data)
     assert response.status_code == 201
     assert response.json()["Name"] == "Test Bistro Updated"
