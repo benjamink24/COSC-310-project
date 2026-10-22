@@ -33,3 +33,10 @@ def test_menu_operations():
     )
     assert modified_item["Price"] == 12.00
     assert modified_item["Availability"] is False
+    
+    updated_menu_item = {"Name": "Truffle Fries", "Price": 10.50, "Availability": False}
+    response = client.put("/restaurants/6/menu/Truffle Fries", json=updated_menu_item)
+    assert response.status_code == 200
+
+
+

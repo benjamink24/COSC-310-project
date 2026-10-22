@@ -136,38 +136,7 @@
         "Hours": "9:00 AM - 5:00 PM",
         "Photos": [],
         "menu": [
-            {
-                "Name": "Truffle Fries",
-                "Price": 12.0,
-                "Availability": false
-            }
+            
         ]
-    },
-    {
-        "id": 7,
-        "Name": "Test Bistro",
-        "Cuisine": "Fusion",
-        "Address": "123 Test St",
-        "Hours": "9:00 AM - 5:00 PM",
-        "Photos": [],
-        "menu": []
-    },
-    {
-        "id": 8,
-        "Name": "Test Bistro",
-        "Cuisine": "Fusion",
-        "Address": "123 Test St",
-        "Hours": "9:00 AM - 5:00 PM",
-        "Photos": [],
-        "menu": []
-    },
-    {
-        "id": 9,
-        "Name": "Test Bistro",
-        "Cuisine": "Fusion",
-        "Address": "123 Test St",
-        "Hours": "9:00 AM - 5:00 PM",
-        "Photos": [],
-        "menu": []
     }
 ]

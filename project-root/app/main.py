@@ -16,10 +16,10 @@ app.add_middleware(
     allow_headers= ["*"],
 )
 
+
+
 app.include_router(restaurant_router)
-#cd into app 
-# terminal comand to start hosting on port 8000:
-# uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
+
 
 
 @app.get("/health")
