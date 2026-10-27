@@ -11,38 +11,26 @@ class resService:
     def create_restaurant(self, restaurant_data: dict) -> dict:
         return self.repo.add_restaurants(restaurant_data)
 
-    def update_restaurant(self, res_name: str, update_data: dict):
-        return self.repo.update_res(res_name, update_data)
+    def update_restaurant(self, res_id: int, update_data: dict):
+        return self.repo.update_res(res_id, update_data)
 
-    def add_menu_item(self, res_name: str, menuItemData: dict) -> dict | None:
-        return self.repo.add_menu_item(res_name, menuItemData)
+    def add_menu_item(self, res_id: int, menuItemData: dict) -> dict | None:
+        return self.repo.add_menu_item(res_id, menuItemData)
 
-    def update_menu_item(self, res_name: str, item_name: str, update_data: dict):
-        return self.repo.update_menu_item(res_name, item_name, update_data)
+    def update_menu_item(self, res_id: int, item_name: str, update_data: dict):
+        return self.repo.update_menu_item(res_id, item_name, update_data)
 
     def get_restaurants_by_name(self, restaurant_name: str) -> list:
-        restaurats_list = self.repo.get_all_restaurants()
-        for i in restaurats_list:
-            if i["Name"].lower() == restaurant_name.lower():
-                return i
-            # else:
-            # throw error
+        return self.repo.get_restaurants_by_name(restaurant_name)
+            
 
-    def get_menu_items(self, restaurant_name: str, menu_item: str) -> list:
-        restaurats_list = self.repo.get_all_restaurants()
-        for i in restaurats_list:
-            if i["Name"].lower() == restaurant_name.lower():
-                for j in i["menu"]:
-                    if j["Name"].lower() == menu_item.lower():
-                        return j
+    def get_restaurants_by_id(self, restaurant_id: int) -> list:
+        return self.repo.get_restaurants_by_id(restaurant_id)
 
-            # else:if
-            # throw error
+    def get_menu_items(self, restaurant_id: int, menu_item: str) -> list:
+        return self.repo.get_menu_items(restaurant_id,menu_item)
+
+           
 
     def get_restaurants_by_cuisine_type(self, cuisine_type: str) -> list:
-        restaurats_list = self.repo.get_all_restaurants()
-        filtered_restaurants = []
-        for i in restaurats_list:
-            if i["Cuisine"].lower() == cuisine_type.lower():
-                filtered_restaurants.append(i)
-        return filtered_restaurants
+        return self.get_restaurants_by_cuisine_type(cuisine_type)
