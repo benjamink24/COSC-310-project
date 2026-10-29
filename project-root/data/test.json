@@ -1,0 +1,22 @@
+[
+    {
+        "id": 5,
+        "Name": "Test Bistro Updated",
+        "Cuisine": "Modern Fusion",
+        "Address": "456 New St",
+        "Hours": "10:00 AM - 6:00 PM",
+        "Photos": [],
+        "menu": []
+    },
+    {
+        "id": 6,
+        "Name": "Test Bistro",
+        "Cuisine": "Fusion",
+        "Address": "123 Test St",
+        "Hours": "9:00 AM - 5:00 PM",
+        "Photos": [],
+        "menu": [
+            
+        ]
+    }
+]

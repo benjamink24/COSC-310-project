@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang = "en">
+    <head>
+        <meta charset="UTF-8">
+        <title>ManharEats</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
+
+    <body>
+        <header>
+            <h1>ManharEats</h1>
+            <p>We know why you're here</p>
+        </header>
+
+        <main>
+            <section>
+                <h2>Restaurants</h2>
+                <p id="status" role="status">Loading Restaurants...</p>
+                <input type="text" id="restaurant-search" placeholder="Search restaurants by name or cuisine..." aria-label="Search restaurants">
+                <select id="cuisine-filter" aria-label="Filter by cuisine">
+                <option value="">All Cuisines</option>
+                </select>
+                <div id="restaurant-list"></div>
+            </section>
+
+            <section id="details-section">
+                <h2>Restaurant Details</h2>
+                <div id="restaurant-details">
+                    <p>Select a Restaurant to view its details</p>
+                </div>
+            </section>
+
+            <section>
+                <h2>Restaurant Management</h2>
+                <label for="operation">Choose operation:</label>
+                <select id="operation">
+                    <option value="create">Create restaurant</option>
+                    <option value="update">Update restaurant</option>
+                </select>
+
+                <label for="manage-id">Restaurant to update:</label>
+                <select id="manage-id">
+                    <option value="">Select a restaurant</option>
+                </select>
+
+                <form id="restaurant-form">
+                    <label for="name">Restaurant name:</label>
+                    <input id="name" name="Name" required>
+
+                    <label for="cuisine">Cuisine:</label>
+                    <input id="cuisine" name="Cuisine" required>
+
+                    <label for="address">Address:</label>
+                    <input id="address" name="Address" required>
+
+                    <label for="hours">Hours:</label>
+                    <input id="hours" name ="Hours" required>
+
+                    <label for="photos">Photo URLs (one per line):</label>
+                    <textarea id="photos" name="Photos"></textarea>
+                    
+                    <button type="submit" id="save-button">
+                        Create Restaurant
+                    </button>
+                </form>
+
+                <p id="form-status" role="status"></p>
+            </section>
+
+            <section id="menu-management">
+                <h2>Menu Management</h2>
+                <label for="menu-restaurant-id">Select restaurant</label>
+                <select id="menu-restaurant-id" required>
+                    <option value="">Select a restaurant</option>
+                </select>
+
+                <label for="menu-operation">Choose operation:</label>
+                <select id="menu-operation">
+                    <option value="create">Add menu items</option>
+                    <option value="update">Update menu item</option>
+                </select>
+
+                <label for="menu-item-id">Menu item to update:</label>
+                <select id="menu-item-id">
+                    <option value="">Select a menu item</option>
+                </select>
+
+                <form id="menu-form">
+                    <label for="menu-name">Menu item name:</label>
+                    <input type="text" id="menu-name" name="name" required>
+                    <label for="menu-price">Price ($):</label>
+                    <input type="number" id="menu-price" name="price" min="0" step="0.01" required>
+                    <label for="menu-availability">Availability:</label>
+                    <select id="menu-availability" name="availability">
+                        <option value="true">Available</option>
+                        <option value="false">Unavailable</option>
+                    </select>
+
+                    <button type ="submit" id="menu-save-button">Add Menu Item</button>
+                    <p id="menu-status" role="status"></p>
+                </form>
+            </section>
+        </main>
+
+        <script src="script.js"></script>
+    </body>
+</html>
