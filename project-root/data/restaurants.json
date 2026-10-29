@@ -6,5 +6,190 @@
                 "Address": "ResAddress",
                 "Hours": "ResHours"
             }
+<<<<<<< Updated upstream
     ]
 }
+=======
+        ]
+    },
+    {
+        "id": 2,
+        "Name": "Bohemian Cafe",
+        "Cuisine": "Breakfast & Brunch",
+        "Address": "572 Bernard Ave, Kelowna, BC",
+        "Hours": "7:00 AM - 2:30 PM",
+        "Photos": [],
+        "menu": [
+            {
+                "Name": "Classic Eggs Benedict",
+                "Price": 18.0,
+                "Availability": true
+            },
+            {
+                "Name": "French Toast",
+                "Price": 16.0,
+                "Availability": true
+            },
+            {
+                "Name": "Breakfast Burrito",
+                "Price": 17.0,
+                "Availability": true
+            },
+            {
+                "Name": "Blueberry Pancakes",
+                "Price": 15.0,
+                "Availability": false
+            }
+        ]
+    },
+    {
+        "id": 3,
+        "Name": "HUMO Izakaya",
+        "Cuisine": "Japanese / Latin Contemporary",
+        "Address": "210 Lawrence Ave, Kelowna, BC",
+        "Hours": "4:30 PM - 11:00 PM",
+        "Photos": [],
+        "menu": [
+            {
+                "Name": "string",
+                "Price": 0.0,
+                "Availability": true
+            },
+            {
+                "Name": "Chicken Karaage",
+                "Price": 15.0,
+                "Availability": true
+            },
+            {
+                "Name": "Tuna Tostada",
+                "Price": 18.0,
+                "Availability": true
+            },
+            {
+                "Name": "Miso Black Cod",
+                "Price": 29.0,
+                "Availability": false
+            }
+        ]
+    },
+    {
+        "id": 4,
+        "Name": "Antico Pizza Napoletana",
+        "Cuisine": "Italian / Pizza",
+        "Address": "347 Lawrence Ave, Kelowna, BC",
+        "Hours": "11:30 AM - 9:00 PM",
+        "Photos": [],
+        "menu": [
+            {
+                "Name": "string",
+                "Price": 0.0,
+                "Availability": true
+            },
+            {
+                "Name": "Pepperoni Pizza",
+                "Price": 21.0,
+                "Availability": true
+            },
+            {
+                "Name": "Prosciutto Pizza",
+                "Price": 23.0,
+                "Availability": true
+            },
+            {
+                "Name": "Four Cheese Pizza",
+                "Price": 22.0,
+                "Availability": false
+            }
+        ]
+    },
+    {
+        "id": 5,
+        "Name": "Test Bistro Updated",
+        "Cuisine": "Modern Fusion",
+        "Address": "456 New St",
+        "Hours": "10:00 AM - 6:00 PM",
+        "Photos": [],
+        "menu": []
+    },
+    {
+        "id": 6,
+        "Name": "Test Bistro",
+        "Cuisine": "Fusion",
+        "Address": "123 Test St",
+        "Hours": "9:00 AM - 5:00 PM",
+        "Photos": [],
+        "menu": [
+            {
+                "Name": "Truffle Fries",
+                "Price": 10.5,
+                "Availability": false
+            },
+            {
+                "Name": "Truffle Fries",
+                "Price": 10.5,
+                "Availability": true
+            },
+            {
+                "Name": "Truffle Fries",
+                "Price": 10.5,
+                "Availability": true
+            },
+            {
+                "Name": "Truffle Fries",
+                "Price": 10.5,
+                "Availability": true
+            },
+            {
+                "Name": "Truffle Fries",
+                "Price": 10.5,
+                "Availability": true
+            }
+        ]
+    },
+    {
+        "id": 7,
+        "Name": "Test Bistro",
+        "Cuisine": "Fusion",
+        "Address": "123 Test St",
+        "Hours": "9:00 AM - 5:00 PM",
+        "Photos": [],
+        "menu": []
+    },
+    {
+        "Name": "Test Bistro",
+        "Cuisine": "Fusion",
+        "Address": "123 Test St",
+        "Hours": "9:00 AM - 5:00 PM",
+        "Photos": [],
+        "menu": [],
+        "id": 8
+    },
+    {
+        "Name": "Test Bistro",
+        "Cuisine": "Fusion",
+        "Address": "123 Test St",
+        "Hours": "9:00 AM - 5:00 PM",
+        "Photos": [],
+        "menu": [],
+        "id": 9
+    },
+    {
+        "Name": "Test Bistro",
+        "Cuisine": "Fusion",
+        "Address": "123 Test St",
+        "Hours": "9:00 AM - 5:00 PM",
+        "Photos": [],
+        "menu": [],
+        "id": 10
+    },
+    {
+        "Name": "Test Bistro",
+        "Cuisine": "Fusion",
+        "Address": "123 Test St",
+        "Hours": "9:00 AM - 5:00 PM",
+        "Photos": [],
+        "menu": [],
+        "id": 11
+    }
+]
+>>>>>>> Stashed changes
