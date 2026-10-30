@@ -1,23 +1,28 @@
 import json
 import pytest
-from repositories.restaurant_repo import resRepo
+from app.repositories.restaurant_repo import resRepo
+
 
 def test_get_all_restaurants_success(tmp_path):
     """Valid file with restaurant data loads correctly."""
     data_file = tmp_path / "restaurants.json"
-    data_file.write_text(json.dumps({
-        "restaurants": [
-            {"id": 1, "name": "Pasta Place"},
-            {"id": 2, "name": "Burger Barn"}
-        ]
-    }))
+    data_file.write_text(
+        json.dumps(
+            {
+                "restaurants": [
+                    {"id": 1, "name": "Pasta Place"},
+                    {"id": 2, "name": "Burger Barn"},
+                ]
+            }
+        )
+    )
 
     repo = resRepo(file_path=str(data_file))
     result = repo.get_all_restaurants()
 
     assert result == [
         {"id": 1, "name": "Pasta Place"},
-        {"id": 2, "name": "Burger Barn"}
+        {"id": 2, "name": "Burger Barn"},
     ]
 
 

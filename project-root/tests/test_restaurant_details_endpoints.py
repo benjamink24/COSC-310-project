@@ -35,6 +35,7 @@ def client(monkeypatch):
 
 # --- Restaurant details ---
 
+
 def test_get_valid_restaurant(client):
     response = client.get("/restaurants/1")
     assert response.status_code == 200
@@ -58,11 +59,12 @@ def test_get_invalid_restaurant(client):
 
 # --- Menu ---
 
+
 def test_get_valid_menu(client):
     response = client.get("/restaurants/1/menu")
     assert response.status_code == 200
     body = response.json()
-    assert len(body) == 2
+    assert len(body) == 4
     assert body[0] == {"Name": "Grilled Salmon", "Price": 32.0, "Availability": True}
 
 
@@ -72,14 +74,15 @@ def test_get_menu_invalid_restaurant(client):
 
 # --- Menu item ---
 
+
 def test_get_valid_menu_item(client):
     response = client.get("/restaurants/1/menu/Grilled Salmon")
     assert response.status_code == 200
     assert response.json() == {
-                "Name": "Grilled Salmon",
-                "Price": 32.0,
-                "Availability": True
-            }
+        "Name": "Grilled Salmon",
+        "Price": 32.0,
+        "Availability": True,
+    }
 
 
 def test_get_invalid_menu_item(client):
