@@ -9,9 +9,6 @@ from app.main import app
 rest = resService()
 client = TestClient(app)
 
-
-
-
 def test_health():
     response = client.get("/health")
 
