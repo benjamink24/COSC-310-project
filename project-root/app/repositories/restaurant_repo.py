@@ -4,24 +4,18 @@ import os
 from .repository import AbstractRepository
 
 
-class resRepo(AbstractRepository):
-
-    def __init__(self, file_path: str = "./data/restaurants.json"):
-
-
 def running_tests() -> bool:
     return os.environ.get("RUNNING_TESTS") == "1"
 
-
-class resRepo:
+class resRepo(AbstractRepository):
     def __init__(self, file_path: str | None = None):
         if file_path is None:
             file_path = "./data/test.json" if running_tests() else "./data/restaurants.json"
 
         self.file_path: Path = Path(file_path)
 
-    
-  def get_all(self) -> list:
+
+    def get_all(self) -> list:
         if not self.file_path.exists():
             return []
         with open(self.file_path, "r", encoding="utf-8") as f:
