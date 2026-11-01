@@ -1,14 +1,27 @@
 import json
 from pathlib import Path
+import os
 from .repository import AbstractRepository
 
 
 class resRepo(AbstractRepository):
 
     def __init__(self, file_path: str = "./data/restaurants.json"):
+
+
+def running_tests() -> bool:
+    return os.environ.get("RUNNING_TESTS") == "1"
+
+
+class resRepo:
+    def __init__(self, file_path: str | None = None):
+        if file_path is None:
+            file_path = "./data/test.json" if running_tests() else "./data/restaurants.json"
+
         self.file_path: Path = Path(file_path)
 
-    def get_all(self) -> list:
+    
+  def get_all(self) -> list:
         if not self.file_path.exists():
             return []
         with open(self.file_path, "r", encoding="utf-8") as f:
@@ -16,6 +29,7 @@ class resRepo(AbstractRepository):
             if isinstance(data, list):
                 return data
             return data.get("restaurants", [])
+
 
     def get_by_field(self, field: str, value: str) -> list:
         restaurants = self.get_all()
@@ -28,6 +42,7 @@ class resRepo(AbstractRepository):
                 if str(r.get(field, "")).strip().lower() == str(value).strip().lower():
                     filtered.append(r)
         return filtered
+
 
     def add(self, item_dict: dict) -> dict:
         return self.add_restaurants(item_dict)
@@ -52,20 +67,20 @@ class resRepo(AbstractRepository):
 
     def add_restaurants(self, res_dict: dict) -> dict:
         restaurants = self.get_all_restaurants()
-        if "id" not in res_dict or res_dict["id"] is None:
-            if restaurants and "id" in restaurants[-1]:
-                new_id = int(restaurants[-1]["id"]) + 1
-            else:
-                new_id = 1
-            res_dict["id"] = new_id
+        if restaurants and "id" in restaurants[-1]:
+            new_id = int(restaurants[-1]["id"]) + 1
+        else:
+            new_id = 1
+        res_dict["id"] = new_id
         restaurants.append(res_dict)
         self.save_all(restaurants)
         return res_dict
 
+
     def update_res(self, restaurant_id, update_data: dict) -> dict:
         restaurants = self.get_all_restaurants()
         for r in restaurants:
-            if "id" in r and str(r.get("id")) == str(restaurant_id):
+            if "id" in r and str(r.get("id")) == str(restaurant_id): #why cast as string if both are ints?
                 r.update(update_data)
                 self.save_all(restaurants)
                 return r
