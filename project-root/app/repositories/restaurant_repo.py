@@ -10,7 +10,7 @@ def running_tests() -> bool:
 class resRepo(AbstractRepository):
     def __init__(self, file_path: str | None = None):
         if file_path is None:
-            file_path = "./data/test.json" if running_tests() else "./data/restaurants.json"
+            file_path =  "./data/restaurants.json" #causes error as the file switches "./data/test.json" if running_tests() else
 
         self.file_path: Path = Path(file_path)
 
