@@ -1,59 +1,59 @@
 import json
 from pathlib import Path
 import os
+from .repository import AbstractRepository
+
 
 def running_tests() -> bool:
     return os.environ.get("RUNNING_TESTS") == "1"
 
-
-class resRepo:
+class resRepo(AbstractRepository):
     def __init__(self, file_path: str | None = None):
         if file_path is None:
-            file_path = "./data/test.json" if running_tests() else "./data/restaurants.json"
+            file_path =  "./data/restaurants.json" #causes error as the file switches "./data/test.json" if running_tests() else
+
         self.file_path: Path = Path(file_path)
 
-    def get_all_restaurants(self) -> list:
+
+    def get_all(self) -> list:
         if not self.file_path.exists():
             return []
         with open(self.file_path, "r", encoding="utf-8") as f:
             data = json.load(f)
-            # If the file is a list, return it directly without .get()
             if isinstance(data, list):
                 return data
             return data.get("restaurants", [])
 
-    ####
-    def get_restaurants_by_name(self, restaurant_name: str) -> list:
-        restaurats_list = self.get_all_restaurants()
-        for i in restaurats_list:
-            if i["Name"].lower() == restaurant_name.strip().lower():
-                return i
 
-        return None
+    def get_by_field(self, field: str, value: str) -> list:
+        restaurants = self.get_all()
+        filtered = []
+        for r in restaurants:
+            if str(field).strip().lower() == "id":
+                if "id" in r and str(r.get("id")) == str(value):
+                    filtered.append(r)
+            else:
+                if str(r.get(field, "")).strip().lower() == str(value).strip().lower():
+                    filtered.append(r)
+        return filtered
 
-    def get_restaurants_by_id(self, restaurant_id: int):
-        for r in self.get_all_restaurants():
-            if r["id"] == restaurant_id:
-                return r
-        return None
 
-    def get_menu_items(self, restaurant_id: int, menu_item: str):
-        for r in self.get_all_restaurants():
-            if r["id"] == restaurant_id:
-                for item in r["menu"]:
-                    if item["Name"].lower() == menu_item.lower():
-                        return item
-        return None
+    def add(self, item_dict: dict) -> dict:
+        return self.add_restaurants(item_dict)
+
+    def update(self, identifier, update_data: dict) -> dict:
+        return self.update_res(identifier, update_data)
+
+    def get_all_restaurants(self) -> list:
+        return self.get_all()
+
+    def get_restaurants_by_id(self, restaurant_id) -> dict:
+        results = self.get_by_field("id", restaurant_id)
+        return results[0] if results else None
 
     def get_restaurants_by_cuisine_type(self, cuisine_type: str) -> list:
-        restaurats_list = self.get_all_restaurants()
-        filtered_restaurants = []
-        for i in restaurats_list:
-            if i["Cuisine"].lower() == cuisine_type.lower():
-                filtered_restaurants.append(i)
-        return filtered_restaurants
+        return self.get_by_field("Cuisine", cuisine_type)
 
-    ####
     def save_all(self, data):
         self.file_path.parent.mkdir(parents=True, exist_ok=True)
         with open(self.file_path, "w", encoding="utf-8") as f:
@@ -61,38 +61,60 @@ class resRepo:
 
     def add_restaurants(self, res_dict: dict) -> dict:
         restaurants = self.get_all_restaurants()
-        ids = [int(r["id"]) for r in restaurants if str(r.get("id", "")).isdigit()]
-        new_res = {"id": max(ids) + 1 if ids else 1, **res_dict}
-        restaurants.append(new_res)
+        if restaurants and "id" in restaurants[-1]:
+            new_id = int(restaurants[-1]["id"]) + 1
+        else:
+            new_id = 1
+        res_dict["id"] = new_id
+        restaurants.append(res_dict)
         self.save_all(restaurants)
-        return new_res
+        return res_dict
 
-    def update_res(self, res_id: int, update_data: dict):
+
+    def update_res(self, restaurant_id, update_data: dict) -> dict:
         restaurants = self.get_all_restaurants()
         for r in restaurants:
-            if r.get("id") == res_id:
+            if "id" in r and str(r.get("id")) == str(restaurant_id): #why cast as string if both are ints?
                 r.update(update_data)
                 self.save_all(restaurants)
                 return r
         return None
 
-    def add_menu_item(self, res_id: int, menu_item_dict: dict):
+    def get_menu_items(self, restaurant_id, menu_item_name: str) -> dict:
+        restaurant = self.get_restaurants_by_id(restaurant_id)
+        if not restaurant:
+            return None
+        for j in restaurant.get("menu", []):
+            if (
+                str(j.get("Name", "")).strip().lower()
+                == str(menu_item_name).strip().lower()
+            ):
+                return j
+        return None
+
+    def add_menu_item(self, restaurant_id, menu_item_dict: dict) -> dict:
         restaurants = self.get_all_restaurants()
         for r in restaurants:
-            if r.get("id") == res_id:
-                if r.get("menu") is None:
+            if "id" in r and str(r.get("id")) == str(restaurant_id):
+                if "menu" not in r or r["menu"] is None:
                     r["menu"] = []
                 r["menu"].append(menu_item_dict)
                 self.save_all(restaurants)
                 return r
         return None
 
-    def update_menu_item(self, res_id: int, item_name: str, update_data: dict):
+    def update_menu_item(
+        self, restaurant_id, item_name: str, update_data: dict
+    ) -> dict:
         restaurants = self.get_all_restaurants()
         for r in restaurants:
-            if r.get("id") == res_id:
-                for item in r.get("menu") or []:
-                    if str(item.get("Name", "")).strip().lower() == item_name.strip().lower():
+            if "id" in r and str(r.get("id")) == str(restaurant_id):
+                menu = r.get("menu") or []
+                for item in menu:
+                    if (
+                        str(item.get("Name", "")).strip().lower()
+                        == str(item_name).strip().lower()
+                    ):
                         item.update(update_data)
                         self.save_all(restaurants)
                         return r
