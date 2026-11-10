@@ -1,0 +1,14 @@
+
+[
+    {
+        "cId": 1,
+        "firstName": "Jane",
+        "lastName": "Doe",
+        "Address": "804 Acadamey Way, Kelowna, BC",
+        "emailAddress": "Janedoe@gmail.com",
+        "payment method": "credit",
+        "phoneNumber": "250 555 4567",
+        "orderHistory": [],
+        "active": true
+    }
+]
