@@ -1,7 +1,5 @@
-
 [
     {
-        "cId": 1,
         "firstName": "Jane",
         "lastName": "Doe",
         "Address": "804 Acadamey Way, Kelowna, BC",
@@ -9,6 +7,7 @@
         "payment method": "credit",
         "phoneNumber": "250 555 4567",
         "orderHistory": [],
-        "active": true
+        "active": true,
+        "cId": 1
     }
 ]

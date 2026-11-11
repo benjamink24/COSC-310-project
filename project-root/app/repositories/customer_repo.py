@@ -34,11 +34,13 @@ class customerRepo(AbstractRepository):
 
 
     def add_customer(self, customer_dict: dict) -> dict:
-                customers = self.get_all_customemrs()
+                customers = self.get_all_customers()
                 if customers and "cId" in customers[-1]:
                     new_id = int(customers[-1]["cId"]) + 1
                 else:
                     new_id = 1
+                customer_dict["orderHistory"] = []
+                customer_dict["active"] = True
                 customer_dict["cId"] = new_id
                 customers.append(customer_dict)
                 self.save_all(customers)
@@ -48,7 +50,7 @@ class customerRepo(AbstractRepository):
     def update_customer(self, cId, update_data: dict) -> dict:
                 customers = self.get_all_customers()
                 for c in customers:
-                    if "cId" in c and str(c.get("id")) == str(cId): #why cast as string if both are ints?
+                    if "cId" in c and str(c.get("cId")) == str(cId): #why cast as string if both are ints?
                         c.update(update_data)
                         self.save_all(customers)
                         return c
@@ -63,11 +65,6 @@ class customerRepo(AbstractRepository):
     
     def update(self, identifier, update_data: dict) -> dict:
         return self.update_customer(identifier, update_data)
-    
-        
-        
-    
-       
     
     def save_all(self, data):
         self.file_path.parent.mkdir(parents=True, exist_ok=True)
