@@ -23,7 +23,7 @@ def list_customers():
 def list_customers(cId: int):
     individualCustomer = customer.get_customers_by_id(cId)
     if individualCustomer is None:
-            raise HTTPException(status_code=404, detail="Restaurant not found")
+            raise HTTPException(status_code=404, detail="customer not found")
     return  individualCustomer
 #add customer
 @router.post("/", 

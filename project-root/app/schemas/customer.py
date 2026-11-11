@@ -13,6 +13,7 @@ class customer_model(BaseModel):
     emailAddress: str = Field(min_length=1, max_length=100)
     paymentMethod: str = Field(min_length=1, max_length=100)
     phoneNumber: str = Field(min_length=1, max_length=100)
+    orderHistory: list = [] 
     active: bool
 
 class add_customer_model(BaseModel):
