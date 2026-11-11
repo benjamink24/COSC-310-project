@@ -20,3 +20,13 @@
 10. Manhar used AI to write the tests for project-root\tests\test_create_and_update_menu.py, project-root\tests\test_create_and_update_restaurant.py pr 84
 
 11. The frontend was assisted as Kai prompted the model to provide information that was necessary to create a working frontend. This influenced the creation of the frontend. Model: chatgpt pr 97
+
+Entry 12
+- Student(s): Ben Kelly
+- Artifact: git hub issues for M2
+- Label: AI-GENERATED
+- AI tool: ChatGPT
+- Purpose: to flush out and create MD for already made User stories and Epics for the M2 portion of the project. 
+- Influence: epics and userstories were converted from predefined userstories and epics into a flushed out version(generated epic description and user story acceptance criteria/engineering task ideas) for M2 use.
+- Validation: Ben revised the epic and user story descriptions, acceptance criteria, and engineering tasks to ensure they met project requirements. 
+- PR: NA
