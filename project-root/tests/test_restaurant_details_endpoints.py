@@ -43,7 +43,7 @@ def test_get_valid_restaurant(client):
         "Name": "Waterfront Wines",
         "Cuisine": "Farm-to-Table",
         "Address": "1180 Sunset Dr #104, Kelowna, BC",
-        "Hours": "5:00 PM - 10:00 PM",
+        "Hours": "5:00 PM - 10:00 PM"
     }
 
 

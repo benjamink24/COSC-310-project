@@ -118,5 +118,23 @@
                 "Availability": false
             }
         ]
+    },
+    {
+        "Name": "string",
+        "Cuisine": "string",
+        "Address": "string",
+        "Hours": "string",
+        "Photos": [],
+        "menu": [],
+        "id": 5
+    },
+    {
+        "Name": "string",
+        "Cuisine": "string",
+        "Address": "string",
+        "Hours": "string",
+        "Photos": [],
+        "menu": [],
+        "id": 6
     }
 ]
