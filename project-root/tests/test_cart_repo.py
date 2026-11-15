@@ -40,7 +40,7 @@ def test_get_all_carts_empty_list(tmp_path):
     data_file = tmp_path / "carts.json"
     data_file.write_text(json.dumps({"carts": []}))
 
-    repo = CartRepo(file_path=str(data_file))
+    repo = cartRepo(file_path=str(data_file))
     result = repo.get_all_carts()
 
     assert result == []
@@ -50,7 +50,7 @@ def test_get_all_carts_missing_file(tmp_path):
     """Non-existent file handles missing state cleanly."""
     data_file = tmp_path / "does_not_exist.json"
 
-    repo = CartRepo(file_path=str(data_file))
+    repo = cartRepo(file_path=str(data_file))
     result = repo.get_all_carts()
 
     assert result == []
