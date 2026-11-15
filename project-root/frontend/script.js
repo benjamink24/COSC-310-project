@@ -1,4 +1,88 @@
 
+const SESSION_KEY = "manharEatsSession";
+
+function readCurrentUser() {
+    const storedSession = sessionStorage.getItem(SESSION_KEY);
+
+    if (!storedSession) {
+        return null;
+    }
+
+    let session;
+    try {
+        session = JSON.parse(storedSession);
+    } catch (error) {
+        sessionStorage.removeItem(SESSION_KEY);
+        return null;
+    }
+
+    if (!session || !["customer", "restaurant", "admin"].includes(session.role)) {
+        sessionStorage.removeItem(SESSION_KEY);
+        return null;
+    }
+
+    return session;
+}
+
+const currentUser = readCurrentUser();
+
+function isRestaurantUser() {
+    return Boolean(currentUser && currentUser.role === "restaurant");
+}
+
+function isCustomerUser() {
+    return Boolean(currentUser && currentUser.role === "customer");
+}
+
+function canManageRestaurantEndpoints() {
+    return Boolean(
+        currentUser &&
+        ["restaurant", "admin"].includes(currentUser.role)
+    );
+}
+
+function canManageRestaurant(restaurantId) {
+    return Boolean(
+        currentUser &&
+        currentUser.role === "restaurant" &&
+        String(restaurantId) === String(currentUser.restaurantId)
+    );
+}
+
+function canViewRestaurant(restaurantId) {
+    return Boolean(
+        currentUser &&
+        (["customer", "admin"].includes(currentUser.role) ||
+        canManageRestaurant(restaurantId)
+        )
+    );
+}
+
+if (!currentUser) {
+    window.location.replace("login.html");
+} else {
+    document.body.dataset.role = currentUser.role;
+    document.getElementById("account-name").textContent = currentUser.username;
+    const roleLabels = {
+        customer: "Customer account",
+        restaurant: currentUser.restaurantName || "Restaurant account",
+        admin: "Admin account"
+    };
+    document.getElementById("account-role").textContent = roleLabels[currentUser.role];
+    document.getElementById("restaurant-app").hidden = false;
+    document.getElementById("customer-app").hidden =
+        currentUser.role !== "customer";
+    document.getElementById("restaurant-management").hidden =
+        !canManageRestaurantEndpoints();
+    document.getElementById("menu-management").hidden =
+        currentUser.role !== "restaurant";
+}
+
+document.getElementById("logout-button").addEventListener("click", () => {
+    sessionStorage.removeItem(SESSION_KEY);
+    window.location.replace("login.html");
+});
+
 const API_URL = "http://127.0.0.1:8000";
 
 const operationSelect = document.getElementById("operation");
@@ -19,8 +103,95 @@ const statusMessage = document.getElementById("menu-status");
 let allRestaurants = [];
 let currentMenuItems = [];
 
+const createRestaurantOption = operationSelect.querySelector(
+    'option[value="create"]'
+);
+const updateRestaurantOption = operationSelect.querySelector(
+    'option[value="update"]'
+);
+const manageIdLabel = document.getElementById("manage-id-label");
+
+if (currentUser && currentUser.role === "restaurant") {
+    createRestaurantOption.hidden = true;
+    createRestaurantOption.disabled = true;
+    operationSelect.value = "update";
+    operationSelect.disabled = true;
+    manageIdSelect.disabled = false;
+    manageIdSelect.required = true;
+    saveButton.textContent = "Update Restaurant";
+} else if (currentUser && currentUser.role === "admin") {
+    updateRestaurantOption.hidden = true;
+    updateRestaurantOption.disabled = true;
+    operationSelect.value = "create";
+    operationSelect.disabled = true;
+    manageIdLabel.hidden = true;
+    manageIdSelect.hidden = true;
+}
+
+function visibleRestaurants(restaurants) {
+    if (!currentUser || currentUser.role !== "restaurant") {
+        return restaurants;
+    }
+
+    return restaurants.filter(
+        restaurant => String(restaurant.id) === String(currentUser.restaurantId)
+    );
+}
+
+async function loadCustomerProfile() {
+    if (!isCustomerUser()) {
+        return;
+    }
+
+    const status = document.getElementById("customer-status");
+    const profile = document.getElementById("customer-profile");
+    const customerId = Number(currentUser.customerId);
+
+    if (!Number.isInteger(customerId) || customerId < 1) {
+        status.textContent = "This customer login has no linked customer profile.";
+        return;
+    }
+
+    status.textContent = "Loading your customer profile...";
+
+    try {
+        const response = await fetch(`${API_URL}/customer/${customerId}`);
+
+        if (!response.ok) {
+            throw new Error(`HTTP error: ${response.status}`);
+        }
+
+        const customer = await response.json();
+        profile.replaceChildren();
+
+        const fields = [
+            ["Name", `${customer.firstName} ${customer.lastName}`],
+            ["Email", customer.emailAddress],
+            ["Address", customer.Address]
+        ];
+
+        fields.forEach(([label, value]) => {
+            const paragraph = document.createElement("p");
+            const strong = document.createElement("strong");
+            strong.textContent = `${label}: `;
+            paragraph.append(strong, document.createTextNode(value ?? "Not provided"));
+            profile.appendChild(paragraph);
+        });
+
+        status.textContent = "Your customer profile is loaded.";
+    } catch (error) {
+        console.error("Error loading customer profile:", error);
+        status.textContent =
+            `Could not load your customer profile: ${error.message}`;
+    }
+}
+
 // GET /restaurants/ - List Restaurants
 async function loadRestaurants() {
+    if (!currentUser) {
+        return;
+    }
+
     const status = document.getElementById("status");
 
     status.textContent = "Loading restaurants...";
@@ -33,11 +204,13 @@ async function loadRestaurants() {
         }
 
         allRestaurants = await response.json();
+        const availableRestaurants = visibleRestaurants(allRestaurants);
 
-        populateCuisineFilter();
-        displayRestaurants(allRestaurants);
+        populateCuisineFilter(availableRestaurants);
+        displayRestaurants(availableRestaurants);
         
-        status.textContent = `Found ${allRestaurants.length} restaurant(s).`;
+        status.textContent =
+            `Found ${availableRestaurants.length} restaurant(s).`;
 
     } catch (error) {
         console.error("Error loading restaurants:", error);
@@ -63,7 +236,7 @@ function displayRestaurants(restaurants) {
         button.textContent = "View Details";
 
         button.addEventListener("click", () => {
-            viewRestaurantDetails(restaurant.Name);
+            viewRestaurantDetails(restaurant.id);
         });
 
         card.appendChild(name);
@@ -88,7 +261,7 @@ function searchRestaurants() {
     const status = document.getElementById("status");
 
     // Filter the restaurants already loaded from the API
-    const filteredRestaurants = allRestaurants.filter(restaurant => {
+    const filteredRestaurants = visibleRestaurants(allRestaurants).filter(restaurant => {
         const name = (restaurant.Name ?? restaurant.name ?? "")
             .toLowerCase();
 
@@ -112,7 +285,7 @@ function searchRestaurants() {
 }
 
 // Populate the cuisine filter
-function populateCuisineFilter() {
+function populateCuisineFilter(restaurants = visibleRestaurants(allRestaurants)) {
     const cuisineFilter = document.getElementById("cuisine-filter");
 
     cuisineFilter.innerHTML = "";
@@ -124,7 +297,7 @@ function populateCuisineFilter() {
 
     const cuisines = [
         ...new Set(
-            allRestaurants
+            restaurants
                 .map(restaurant =>
                     restaurant.Cuisine ?? restaurant.cuisine
                 )
@@ -141,14 +314,18 @@ function populateCuisineFilter() {
 }
 
 // Display the selected restaurant's details
-async function viewRestaurantDetails(restaurantName) {
+async function viewRestaurantDetails(restaurantId) {
+    if (!canViewRestaurant(restaurantId)) {
+        return;
+    }
+
     const details = document.getElementById("restaurant-details");
 
     details.textContent = "Loading restaurant details...";
 
     try {
         const response = await fetch(
-            `${API_URL}/restaurants/${encodeURIComponent(restaurantName)}`
+            `${API_URL}/restaurants/${encodeURIComponent(restaurantId)}`
         );
 
         if (!response.ok) {
@@ -156,7 +333,6 @@ async function viewRestaurantDetails(restaurantName) {
         }
 
         const restaurant = await response.json();
-        selectedRestaurant = restaurant;
 
         details.innerHTML = `
             <h3>${restaurant.Name ?? restaurant.name}</h3>
@@ -171,7 +347,7 @@ async function viewRestaurantDetails(restaurantName) {
 
         document.getElementById("view-menu-button")
             .addEventListener("click", () => {
-                viewRestaurantMenu(restaurantName);
+                viewRestaurantMenu(restaurantId);
             });
 
     } catch (error) {
@@ -181,14 +357,18 @@ async function viewRestaurantDetails(restaurantName) {
 }
 
 // Display all menu items for the selected restaurant
-async function viewRestaurantMenu(restaurantName) {
+async function viewRestaurantMenu(restaurantId) {
+    if (!canViewRestaurant(restaurantId)) {
+        return;
+    }
+
     const menuDisplay = document.getElementById("menu-display");
 
     menuDisplay.textContent = "Loading menu...";
 
     try {
         const url =
-            `${API_URL}/restaurants/${encodeURIComponent(restaurantName)}/menu`;
+            `${API_URL}/restaurants/${encodeURIComponent(restaurantId)}/menu`;
 
 
         const response = await fetch(url);
@@ -232,7 +412,7 @@ async function viewRestaurantMenu(restaurantName) {
             button.textContent = "View Item Details";
 
             button.addEventListener("click", () => {
-                viewMenuItem(restaurantName, itemName);
+                viewMenuItem(restaurantId, itemName);
             });
 
             itemElement.append(nameElement, button);
@@ -246,12 +426,16 @@ async function viewRestaurantMenu(restaurantName) {
 }
 
 // Display details for an individual menu item
-async function viewMenuItem(restaurantName, menuItem) {
+async function viewMenuItem(restaurantId, menuItem) {
+    if (!canViewRestaurant(restaurantId)) {
+        return;
+    }
+
     const menuDisplay = document.getElementById("menu-display");
 
     try {
         const response = await fetch(
-            `${API_URL}/restaurants/${encodeURIComponent(restaurantName)}/menu/${encodeURIComponent(menuItem)}`
+            `${API_URL}/restaurants/${encodeURIComponent(restaurantId)}/menu/${encodeURIComponent(menuItem)}`
         );
 
         if (!response.ok) {
@@ -270,7 +454,7 @@ async function viewMenuItem(restaurantName, menuItem) {
         name.textContent = `Name: ${item.Name}`;
 
         const price = document.createElement("p");
-        price.textContent = `Price: ${parseFloat(item.Price).toFixed(1)}`;
+        price.textContent = `Price: ${Number(item.Price).toFixed(2)}`;
 
         const availability = document.createElement("p");
         availability.textContent = `Availability: ${item.Availability ? "True" : "False"}`;
@@ -287,6 +471,10 @@ async function viewMenuItem(restaurantName, menuItem) {
 
 // Load restaurants into the management dropdown
 async function loadManageRestaurants() {
+    if (!isRestaurantUser()) {
+        return;
+    }
+
     try {
         const response = await fetch(`${API_URL}/restaurants/`);
 
@@ -300,14 +488,27 @@ async function loadManageRestaurants() {
         manageIdSelect.innerHTML =
             '<option value="">Select a restaurant</option>';
 
-        restaurants.forEach((restaurant) => {
+        const manageableRestaurants = restaurants.filter(
+            restaurant => canManageRestaurant(restaurant.id)
+        );
+
+        manageableRestaurants.forEach((restaurant) => {
             const option = document.createElement("option");
 
-            option.value = restaurant.Name;
+            option.value = String(restaurant.id);
             option.textContent = restaurant.Name;
 
             manageIdSelect.appendChild(option);
         });
+
+        if (manageableRestaurants.length === 0) {
+            formStatus.textContent =
+                "No restaurant is assigned to this login.";
+            return;
+        }
+
+        manageIdSelect.value = String(currentUser.restaurantId);
+        await loadSelectedRestaurant();
     } catch (error) {
         console.error("Error loading restaurants:", error);
         formStatus.textContent =
@@ -345,29 +546,47 @@ manageIdSelect.required = false;
 let selectedRestaurant = null;
 
 // Load selected restaurant details into the form
-manageIdSelect.addEventListener("change", async () => {
-    const restaurantName = manageIdSelect.value;
+async function loadSelectedRestaurant() {
+    const restaurantId = manageIdSelect.value;
 
     clearRestaurantForm();
     formStatus.textContent = "";
 
-    if (!restaurantName) {
+    if (!restaurantId) {
+        return;
+    }
+    if (!canManageRestaurant(restaurantId)) {
+        formStatus.textContent =
+            "This login can only manage its assigned restaurant.";
         return;
     }
 
     try {
-        const response = await fetch(
-            `${API_URL}/restaurants/${encodeURIComponent(restaurantName)}`
-        );
+        const [detailsResponse, menuResponse] = await Promise.all([
+            fetch(`${API_URL}/restaurants/${encodeURIComponent(restaurantId)}`),
+            fetch(`${API_URL}/restaurants/${encodeURIComponent(restaurantId)}/menu`)
+        ]);
 
-        if (!response.ok) {
-            throw new Error(`HTTP error: ${response.status}`);
+        if (!detailsResponse.ok) {
+            throw new Error(`Restaurant request failed: HTTP ${detailsResponse.status}`);
         }
 
-        const restaurant = await response.json();
+        if (!menuResponse.ok) {
+            throw new Error(`Menu request failed: HTTP ${menuResponse.status}`);
+        }
 
-        // Save the complete restaurant object
-        selectedRestaurant = restaurant;
+        const restaurant = await detailsResponse.json();
+        const menu = await menuResponse.json();
+        if (!Array.isArray(menu)) {
+            throw new Error("The menu API did not return a list.");
+        }
+
+        selectedRestaurant = {
+            ...restaurant,
+            id: Number(restaurantId),
+            Photos: [],
+            menu
+        };
 
         document.getElementById("name").value =
             restaurant.Name ?? "";
@@ -389,47 +608,53 @@ manageIdSelect.addEventListener("change", async () => {
         formStatus.textContent =
             "Could not load restaurant details.";
     }
-});
+}
+
+manageIdSelect.addEventListener("change", loadSelectedRestaurant);
 
 
 // Create or update a restaurant when the form is submitted
 restaurantForm.addEventListener("submit", async (event) => {
     event.preventDefault();
 
-   
-const operation = operationSelect.value;
-const restaurantName = manageIdSelect.value;
+    if (!currentUser || !["restaurant", "admin"].includes(currentUser.role)) {
+        return;
+    }
 
-if (operation === "update" && !selectedRestaurant) {
-    formStatus.textContent =
-        "Please select a restaurant and wait for its details to load.";
-    return;
-}
+    const operation = operationSelect.value;
+    const restaurantId = manageIdSelect.value;
 
-const restaurantData = {
-    id: selectedRestaurant.id,
-    Name: document.getElementById("name").value.trim(),
-    Cuisine: document.getElementById("cuisine").value.trim(),
-    Address: document.getElementById("address").value.trim(),
-    Hours: document.getElementById("hours").value.trim(),
-    Photos: document.getElementById("photos").value
-        .split("\n")
-        .map(url => url.trim())
-        .filter(url => url !== ""),
-    menu: selectedRestaurant.menu ?? []
-};
+    if (
+        (currentUser.role === "restaurant" &&
+            (operation !== "update" || !canManageRestaurant(restaurantId))) ||
+        (currentUser.role === "admin" && operation !== "create")
+    ) {
+        formStatus.textContent = "This account cannot perform that action.";
+        return;
+    }
 
-// Preserve existing fields when updating
-if (operation === "update") {
-    restaurantData.id = selectedRestaurant.id;
-    restaurantData.menu = selectedRestaurant.menu ?? [];
-}
+    if (operation === "update" && !selectedRestaurant) {
+        formStatus.textContent =
+            "Please select a restaurant and wait for its details to load.";
+        return;
+    }
 
+    const restaurantData = {
+        Name: document.getElementById("name").value.trim(),
+        Cuisine: document.getElementById("cuisine").value.trim(),
+        Address: document.getElementById("address").value.trim(),
+        Hours: document.getElementById("hours").value.trim(),
+        Photos: document.getElementById("photos").value
+            .split("\n")
+            .map(url => url.trim())
+            .filter(url => url !== ""),
+        menu: operation === "update" ? selectedRestaurant.menu ?? [] : []
+    };
 
     // Choose the correct endpoint and HTTP method
     const url = operation === "create"
         ? `${API_URL}/restaurants/`
-        : `${API_URL}/restaurants/${encodeURIComponent(restaurantName)}`;
+        : `${API_URL}/restaurants/${encodeURIComponent(restaurantId)}`;
 
     const method = operation === "create" ? "POST" : "PUT";
 
@@ -460,6 +685,7 @@ if (operation === "update") {
 
         // Refresh the dropdown and restaurant list
         await loadManageRestaurants();
+        await loadMenuRestaurants();
 
         if (typeof loadRestaurants === "function") {
             await loadRestaurants();
@@ -482,10 +708,11 @@ if (operation === "update") {
     }
 });
 
-// Load the dropdown when the page starts
-loadManageRestaurants();
-
 async function loadMenuRestaurants() {
+    if (!isRestaurantUser()) {
+        return;
+    }
+
     try {
         const response = await fetch(`${API_URL}/restaurants`);
 
@@ -498,12 +725,21 @@ async function loadMenuRestaurants() {
         restaurantSelect.innerHTML =
             '<option value="">Select a restaurant</option>';
 
-        allRestaurants.forEach(restaurant => {
+        const manageableRestaurants = allRestaurants.filter(
+            restaurant => canManageRestaurant(restaurant.id)
+        );
+
+        manageableRestaurants.forEach(restaurant => {
             const option = document.createElement("option");
-            option.value = restaurant.Name;
+            option.value = String(restaurant.id);
             option.textContent = restaurant.Name;
             restaurantSelect.appendChild(option);
         });
+
+        if (manageableRestaurants.length > 0) {
+            restaurantSelect.value = String(currentUser.restaurantId);
+            await loadMenuItems();
+        }
     } catch (error) {
         console.error("Error loading restaurants:", error);
         statusMessage.textContent = "Could not load restaurants.";
@@ -513,7 +749,7 @@ async function loadMenuRestaurants() {
 // Find the selected restaurant
 function getSelectedRestaurant() {
     return allRestaurants.find(
-        restaurant => restaurant.Name === restaurantSelect.value
+        restaurant => String(restaurant.id) === restaurantSelect.value
     );
 }
 
@@ -541,18 +777,27 @@ function updateMenuForm() {
 
 // Load menu items for the selected restaurant
 async function loadMenuItems() {
-    const restaurantName = restaurantSelect.value;
+    if (!isRestaurantUser()) {
+        return;
+    }
+
+    const restaurantId = restaurantSelect.value;
 
     itemSelect.innerHTML =
         '<option value="">Select a menu item</option>';
 
-    if (!restaurantName) {
+    if (!restaurantId) {
+        return;
+    }
+    if (!canManageRestaurant(restaurantId)) {
+        statusMessage.textContent =
+            "This login can only manage its assigned restaurant.";
         return;
     }
 
     try {
         const response = await fetch(
-            `${API_URL}/restaurants/${encodeURIComponent(restaurantName)}/menu`
+            `${API_URL}/restaurants/${encodeURIComponent(restaurantId)}/menu`
         );
 
         if (!response.ok) {
@@ -627,7 +872,11 @@ function selectMenuItem() {
 async function saveMenuItem(event) {
     event.preventDefault();
 
-    const restaurantName = restaurantSelect.value;
+    if (!isRestaurantUser()) {
+        return;
+    }
+
+    const restaurantId = restaurantSelect.value;
     
     const menuOperationSelect = document.getElementById("menu-operation");
     const operation = menuOperationSelect ? menuOperationSelect.value : "create";
@@ -643,8 +892,13 @@ async function saveMenuItem(event) {
 
     const menuSaveButton = document.querySelector("#menu-form button[type='submit']") || saveButton;
 
-    if (!restaurantName) {
+    if (!restaurantId) {
         statusMessage.textContent = "Please select a restaurant.";
+        return;
+    }
+    if (!canManageRestaurant(restaurantId)) {
+        statusMessage.textContent =
+            "This login can only manage its assigned restaurant.";
         return;
     }
 
@@ -664,7 +918,7 @@ async function saveMenuItem(event) {
         return;
     }
 
-    let url = `${API_URL}/restaurants/${encodeURIComponent(restaurantName)}/menu`;
+    let url = `${API_URL}/restaurants/${encodeURIComponent(restaurantId)}/menu`;
     let method = "POST";
 
     if (operation === "update") {
@@ -729,6 +983,14 @@ async function saveMenuItem(event) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+    if (!currentUser) {
+        return;
+    }
+
+    if (currentUser.role === "customer") {
+        loadCustomerProfile();
+    }
+
     loadRestaurants();
 
     document
@@ -739,8 +1001,11 @@ document.addEventListener("DOMContentLoaded", () => {
         .getElementById("cuisine-filter")
         .addEventListener("change", searchRestaurants);
         
-    loadMenuRestaurants();
-    updateMenuForm();
+    if (isRestaurantUser()) {
+        loadManageRestaurants();
+        loadMenuRestaurants();
+        updateMenuForm();
+    }
 
     document
         .getElementById("menu-restaurant-id")

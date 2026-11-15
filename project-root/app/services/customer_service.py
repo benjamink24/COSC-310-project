@@ -8,13 +8,21 @@ class customerService:
     def get_customers(self) -> list:
         return self.repo.get_all_customers()
 
+    def authenticate_customer(self, username: str, password: str) -> dict | None:
+        customer = self.repo.get_by_credentials(username, password)
+        if customer is None:
+            return None
+        return {
+            "username": customer["username"],
+            "role": "customer",
+            "customerId": customer["cId"],
+        }
+
     def create_customer(self, customer_data: dict) -> dict:
         return self.repo.add_customer(customer_data)
 
     def update_customer(self, res_id: int, update_data: dict):
-        return self.repo.update_customer(res_id, update_data)     
+        return self.repo.update_customer(res_id, update_data)
 
     def get_customers_by_id(self, cId: int) -> list:
         return self.repo.get_customers_by_id(cId)
-
-    

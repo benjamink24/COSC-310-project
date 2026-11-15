@@ -19,9 +19,12 @@ SEED = [
         "phoneNumber": "250 555 4567",
         "orderHistory": [],
         "active": True,
-        "cId": 1
+        "cId": 1,
+        "username": "JDoe",
+        "password": "janeDoe",
     }
 ]
+
 
 @pytest.fixture(autouse=True)
 def temp_data(tmp_path, monkeypatch):
@@ -32,29 +35,49 @@ def temp_data(tmp_path, monkeypatch):
     return data_file
 
 
-
-
 def test_get_valid_customer():
     response = client.get("/customer/1")
     assert response.status_code == 200
     assert response.json() == {
         "firstName": "Jane",
-                "lastName": "Doe",
-                "Address": "804 Acadamey Way, Kelowna, BC",
-                "emailAddress": "Janedoe@gmail.com",
-                "paymentMethod": "credit",
-                "phoneNumber": "250 555 4567",
-                "orderHistory": [],
-                "active": True,
-                "cId": 1
+        "lastName": "Doe",
+        "Address": "804 Acadamey Way, Kelowna, BC",
+        "emailAddress": "Janedoe@gmail.com",
+        "paymentMethod": "credit",
+        "phoneNumber": "250 555 4567",
+        "orderHistory": [],
+        "active": True,
+        "cId": 1,
     }
-
 
 
 def test_get_invalid_customer():
     response = client.get("/customer/-1")
     assert response.status_code == 404
     assert response.json()["detail"] == "customer not found"
+
+
+def test_customer_login_uses_customer_credentials(temp_data):
+    response = client.post(
+        "/customer/login",
+        json={"username": "JDoe", "password": "janeDoe"},
+    )
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "username": "JDoe",
+        "role": "customer",
+        "customerId": 1,
+    }
+
+
+def test_customer_login_rejects_invalid_password(temp_data):
+    response = client.post(
+        "/customer/login",
+        json={"username": "JDoe", "password": "wrong"},
+    )
+
+    assert response.status_code == 401
 
 
 def test_create_and_update_restaurant(temp_data):
@@ -64,13 +87,13 @@ def test_create_and_update_restaurant(temp_data):
         "Address": "804 Acadamey Way, Kelowna, BC",
         "emailAddress": "Janedoe@gmail.com",
         "paymentMethod": "credit",
-        "phoneNumber": "250 555 4567"
+        "phoneNumber": "250 555 4567",
     }
     response = client.post("/customer/", json=new_cus)
     assert response.status_code == 201
     assert response.json()["firstName"] == "Joes"
-    
-    cusId= response.json()["cId"]
+
+    cusId = response.json()["cId"]
     update_data = {
         "firstName": "Test Bistro Updated",
         "lastName": "Doe",
@@ -78,7 +101,7 @@ def test_create_and_update_restaurant(temp_data):
         "emailAddress": "Janedoe@gmail.com",
         "paymentMethod": "credit",
         "phoneNumber": "250 555 4567",
-        "active": True
+        "active": True,
     }
     response = client.put(f"/customer/{cusId}", json=update_data)
     assert response.status_code == 201
