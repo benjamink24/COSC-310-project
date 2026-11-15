@@ -24,11 +24,11 @@ class cartRepo(AbstractRepository):
         filtered = []
         for c in carts:
             if str(field).strip().lower() == "cId":
-                if "cId" in r and str(r.get("cId")) == str(value):
-                    filtered.append(r)
+                if "cId" in c and str(c.get("cId")) == str(value):
+                    filtered.append(c)
             else:
-                if str(r.get(field, "")).strip().lower() == str(value).strip().lower():
-                    filtered.append(r)
+                if str(c.get(field, "")).strip().lower() == str(value).strip().lower():
+                    filtered.append(c)
         return filtered
 
     def get_all_carts(self) -> list:
