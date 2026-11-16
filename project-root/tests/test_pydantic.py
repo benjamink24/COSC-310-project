@@ -2,6 +2,8 @@ import pytest
 from pydantic import ValidationError
 from app.schemas.restaurant import *
 from app.schemas.customer import *
+from app.schemas.cart import *
+from app.schemas.checkout import *
 
 def test_restaurant_model_validity():
     valid_data = {
@@ -41,6 +43,37 @@ def test_customer_model_validity():
     assert model.active == True
     assert model.cId == 1
 
+def test_cart_model_validity():
+    valid_data = {
+        "cId": 67,
+        "items": [
+            {"name": "name_1", "quantity": 2, "price": 19.99, "availability": True}
+        ]
+    }
+    cart = cart_model(**valid_data)
+    assert cart.cId == 67
+    assert len(cart.items) == 1
+    assert cart.items[0].quantity == 2
+
+
+def test_checkout_model_validity():
+    valid_data = {
+        "cId": 67,
+        "emailAddress": "jimplingus@gmail.com",
+        "shippingAddress": {
+            "street": "123 Playground st",
+            "city": "Farmstrong",
+            "postal_code": "V1T 2A2",
+        },
+        "paymentMethod": "credit_card",
+        "subtotal": 100.00,
+        "tax": 12.00,
+        "total": 112.00
+    }
+    checkout = checkout_model(**valid_data)
+    assert checkout.cId == 67
+    assert checkout.shippingAddress.city == "Farmstrong"
+    assert checkout.total == 112.00
 
 def test_restaurant_model_missing_values():
     invalid_data = {"cId": 1 , "Address": "456 University Way"}
