@@ -54,7 +54,7 @@ RESTAURANT_SEED = [
 @pytest.fixture(autouse=True)
 def data_files(tmp_path, monkeypatch):
     """Give every test fresh temp copies of the four JSON files and point every
-    repository at them. The real data/*.json files are never touched."""
+    repository at them"""
     files = {
         name: tmp_path / f"{name}.json"
         for name in ("cart", "history", "customers", "restaurants")

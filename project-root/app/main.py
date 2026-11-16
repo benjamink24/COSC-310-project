@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 from app.api.routes.restaurant_endpoints import router as restaurant_router
 from app.api.routes.customer_endpoints import router as customer_router
+from app.api.routes.cart_endpoints import router as cart_router
+from app.api.routes.checkout_endpoints import router as checkout_router
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
@@ -21,6 +23,8 @@ app.add_middleware(
 
 app.include_router(restaurant_router)
 app.include_router(customer_router)
+app.include_router(cart_router)
+app.include_router(checkout_router)
 
 
 @app.get("/health")

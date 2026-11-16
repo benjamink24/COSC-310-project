@@ -23,10 +23,14 @@ class histRepo:
         return self.get_all()
 
     def add_order(self, order_dict: dict) -> dict:
-                orders = self.get_all_orders()
-                orders.append(order_dict)
-                self.save_all({"orders": orders})
-                return order_dict
+        """Saves an order and gives it the next orderId (1 for the first order)."""
+        orders = self.get_all_orders()
+        ids = [int(o["orderId"]) for o in orders if "orderId" in o]
+        order = {**order_dict, "orderId": max(ids) + 1 if ids else 1}
+        orders.append(order)
+        self.save_all({"orders": orders})
+        return order
+
 
     def add(self, item_dict: dict) -> dict:
         return self.add_order(item_dict)
@@ -35,3 +39,29 @@ class histRepo:
         self.file_path.parent.mkdir(parents=True, exist_ok=True)
         with open(self.file_path, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=4)
+
+    def get_orders_by_cid(self, cId) -> list:
+        """Every order placed by customer cId, oldest first. [] if none."""
+        return [o for o in self.get_all_orders() if str(o.get("cId")) == str(cId)]
+
+    def get_order_by_id(self, orderId) -> dict | None:
+        for o in self.get_all_orders():
+            if str(o.get("orderId")) == str(orderId):
+                return o
+        return None
+
+    def get_by_field(self, field: str, value: str) -> list:
+        return [
+            o for o in self.get_all_orders()
+            if str(o.get(field, "")).strip().lower() == str(value).strip().lower()
+        ]
+    
+    def update(self, identifier, update_data: dict) -> dict | None:
+        """Update an order by orderId (e.g. change its status)."""
+        orders = self.get_all_orders()
+        for o in orders:
+            if str(o.get("orderId")) == str(identifier):
+                o.update(update_data)
+                self.save_all({"orders": orders})
+                return o
+        return None
