@@ -68,3 +68,31 @@ class cartRepo(AbstractRepository):
         self.file_path.parent.mkdir(parents=True, exist_ok=True)
         with open(self.file_path, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=4)
+
+    def get_cart_by_cid(self, cId) -> dict | None:
+        """The cart that belongs to customer cId, or None. (cId is the CUSTOMER id.)"""
+        for c in self.get_all():
+            if str(c.get("cId")) == str(cId):
+                return c
+        return None
+
+    def save_cart(self, cart: dict) -> dict:
+        """Insert-or-replace: a customer never has more than one cart."""
+        carts = self.get_all()
+        for i, c in enumerate(carts):
+            if str(c.get("cId")) == str(cart["cId"]):
+                carts[i] = cart
+                break
+        else:
+            carts.append(cart)
+        self.save_all(carts)
+        return cart
+
+    def clear_cart(self, cId) -> bool:
+        """Delete the customer's whole cart. False if they had none."""
+        carts = self.get_all()
+        remaining = [c for c in carts if str(c.get("cId")) != str(cId)]
+        if len(remaining) == len(carts):
+            return False
+        self.save_all(remaining)
+        return True
