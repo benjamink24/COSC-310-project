@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Sign in | ManharEats</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body class="auth-page">
+        <header class="site-header">
+            <a class="brand" href="login.html">ManharEats</a>
+        </header>
+
+        <main class="auth-shell">
+            <section class="auth-intro" aria-labelledby="page-title">
+                <p class="eyebrow">Welcome back</p>
+                <h1 id="page-title">Sign in to ManharEats</h1>
+                <p>Use your customer or restaurant account to continue.</p>
+            </section>
+
+            <section class="auth-card" aria-labelledby="login-title">
+                <h2 id="login-title">Account sign in</h2>
+
+                <form id="login-form">
+                    <label for="username">Username</label>
+                    <input
+                        id="username"
+                        name="username"
+                        type="text"
+                        autocomplete="username"
+                        required
+                    >
+
+                    <label for="password">Password</label>
+                    <input
+                        id="password"
+                        name="password"
+                        type="password"
+                        autocomplete="current-password"
+                        required
+                    >
+
+                    <button type="submit">Sign in</button>
+                    <p id="login-status" class="login-status" role="status"></p>
+                </form>
+
+                <details class="demo-accounts">
+                    <summary>Development demo accounts</summary>
+                    <p><strong>Customer:</strong> Use your customer username and password.</p>
+                    <p><strong>Admin:</strong> username: admin, password: admin.</p>
+                    <p><strong>Restaurant:</strong> Use the exact restaurant name as both the username and password.</p>
+                </details>
+            </section>
+        </main>
+
+        <script>
+            document
+                .getElementById("login-form")
+                .addEventListener("submit", async (event) => {
+                    event.preventDefault();
+
+                    const username = document
+                        .getElementById("username")
+                        .value
+                        .trim();
+                    const password = document.getElementById("password").value;
+                    const status = document.getElementById("login-status");
+                    const submitButton = event.currentTarget.querySelector(
+                        "button[type='submit']"
+                    );
+
+                    status.textContent = "Checking account...";
+                    submitButton.disabled = true;
+
+                    try {
+                        let session = null;
+
+                        if (username !== "admin") {
+                            const customerResponse = await fetch(
+                                "http://127.0.0.1:8000/customer/login",
+                                {
+                                    method: "POST",
+                                    headers: {
+                                        "Content-Type": "application/json"
+                                    },
+                                    body: JSON.stringify({ username, password })
+                                }
+                            );
+
+                            if (customerResponse.ok) {
+                                session = await customerResponse.json();
+                            } else if (customerResponse.status !== 401) {
+                                throw new Error(
+                                    `Could not check customer account (HTTP ${customerResponse.status}).`
+                                );
+                            }
+                        }
+
+                        if (!session && username === "admin" && password === "admin") {
+                            session = { username, role: "admin" };
+                        }
+
+                        if (!session) {
+                            const response = await fetch(
+                                "http://127.0.0.1:8000/restaurants/"
+                            );
+
+                            if (!response.ok) {
+                                throw new Error(
+                                    `Could not load restaurant accounts (HTTP ${response.status}).`
+                                );
+                            }
+
+                            const restaurants = await response.json();
+                            const restaurant = restaurants.find(
+                                entry =>
+                                    entry.Name === username &&
+                                    entry.Name === password
+                            );
+
+                            if (restaurant) {
+                                session = {
+                                    username,
+                                    role: "restaurant",
+                                    restaurantId: restaurant.id,
+                                    restaurantName: restaurant.Name
+                                };
+                            }
+                        }
+
+                        if (!session) {
+                            status.textContent = "Incorrect username or password.";
+                            return;
+                        }
+
+                        sessionStorage.setItem(
+                            "manharEatsSession",
+                            JSON.stringify(session)
+                        );
+                        window.location.replace("index.html");
+                    } catch (error) {
+                        console.error("Sign-in failed:", error);
+                        status.textContent = error.message;
+                    } finally {
+                        submitButton.disabled = false;
+                    }
+                });
+        </script>
+    </body>
+</html>

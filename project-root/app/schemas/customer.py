@@ -5,6 +5,17 @@ class customer_order_model(BaseModel):
     orderHistory: list[dict] = []
 
 
+class customer_login_model(BaseModel):
+    username: str = Field(min_length=1)
+    password: str = Field(min_length=1)
+
+
+class customer_login_response_model(BaseModel):
+    username: str
+    role: str
+    customerId: int
+
+
 class customer_model(BaseModel):
     cId: int 
     firstName: str = Field(min_length=1, max_length=100)

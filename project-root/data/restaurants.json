@@ -50,7 +50,7 @@
             {
                 "Name": "Breakfast Burrito",
                 "Price": 17.0,
-                "Availability": true
+                "Availability": false
             },
             {
                 "Name": "Blueberry Pancakes",
@@ -63,7 +63,7 @@
         "id": 3,
         "Name": "HUMO Izakaya",
         "Cuisine": "Japanese / Latin Contemporary",
-        "Address": "210 Lawrence Ave, Kelowna, BC",
+        "Address": "211 Lawrence Ave, Kelowna, BC",
         "Hours": "4:30 PM - 11:00 PM",
         "Photos": [],
         "menu": [
@@ -85,6 +85,11 @@
             {
                 "Name": "Miso Black Cod",
                 "Price": 29.0,
+                "Availability": false
+            },
+            {
+                "Name": "Sushi",
+                "Price": 23.0,
                 "Availability": false
             }
         ]

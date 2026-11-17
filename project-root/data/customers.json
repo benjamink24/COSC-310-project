@@ -8,6 +8,21 @@
         "phoneNumber": "250 555 4567",
         "orderHistory": [],
         "active": true,
-        "cId": 1
-    }
+        "cId": 1,
+        "username": "JDoe",
+        "password": "janeDoe"
+    },
+{
+    "firstName": "Michael",
+    "lastName": "Smith",
+    "Address": "123 Bernard Ave, Kelowna, BC",
+    "emailAddress": "msmith@gmail.com",
+    "paymentMethod": "debit",
+    "phoneNumber": "250 555 9876",
+    "orderHistory": [],
+    "active": true,
+    "cId": 2,
+    "username": "MSmith",
+    "password": "michaelSmith"
+}
 ]

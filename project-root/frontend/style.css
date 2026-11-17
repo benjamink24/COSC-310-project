@@ -1,0 +1,280 @@
+:root {
+    color-scheme: light;
+    font-family: "Segoe UI", Arial, sans-serif;
+    color: #172b3a;
+    background: #f3f6f7;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    --brand: #15766f;
+    --brand-dark: #105e59;
+    --border: #dce5e7;
+    --muted: #62727d;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    min-width: 320px;
+    min-height: 100vh;
+    margin: 0;
+    background: #f3f6f7;
+}
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
+}
+
+button,
+.header-link {
+    border: 0;
+    border-radius: 8px;
+    background: var(--brand);
+    color: #fff;
+    font-weight: 650;
+    padding: 0.75rem 1rem;
+    text-decoration: none;
+}
+
+button {
+    cursor: pointer;
+}
+
+button:hover:not(:disabled),
+.header-link:hover {
+    background: var(--brand-dark);
+}
+
+button:disabled {
+    cursor: not-allowed;
+    opacity: 0.62;
+}
+
+[hidden] {
+    display: none !important;
+}
+
+.site-header {
+    min-height: 76px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem max(1.25rem, calc((100% - 1120px) / 2));
+    background: #fff;
+    border-bottom: 1px solid var(--border);
+}
+
+.site-header h1 {
+    margin: 0;
+    font-size: 1.45rem;
+}
+
+.account-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+#account-role {
+    color: var(--muted);
+}
+
+#logout-button {
+    padding: 0.55rem 0.8rem;
+}
+
+.brand {
+    color: var(--brand-dark);
+    font-size: 1.4rem;
+    font-weight: 750;
+    text-decoration: none;
+}
+
+main {
+    width: min(1120px, calc(100% - 2rem));
+    margin: 2rem auto;
+}
+
+main > section {
+    margin-bottom: 1rem;
+    padding: 1.25rem;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: 0 5px 18px rgb(23 43 58 / 5%);
+}
+
+#restaurant-app > section {
+    margin-bottom: 1rem;
+    padding: 1.25rem;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 5px 18px rgb(23 43 58 / 5%);
+}
+
+input,
+select,
+textarea {
+    width: 100%;
+    min-height: 44px;
+    padding: 0.65rem 0.75rem;
+    border: 1px solid #cbd7da;
+    border-radius: 7px;
+    background: #fff;
+    color: inherit;
+}
+
+textarea {
+    min-height: 90px;
+    resize: vertical;
+}
+
+label {
+    display: block;
+    margin: 0.85rem 0 0.35rem;
+    font-weight: 600;
+}
+
+form button {
+    margin-top: 1rem;
+}
+
+#restaurant-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 0.9rem;
+    margin-top: 1rem;
+}
+
+.restaurant-card {
+    padding: 1rem;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    background: #fff;
+}
+
+.restaurant-card button {
+    margin-top: 0.4rem;
+}
+
+#restaurant-details > button {
+    margin: 0.5rem 0;
+}
+
+.auth-page {
+    background:
+        radial-gradient(ellipse at top left, #dcefeb 0, transparent 42%),
+        #f3f6f7;
+}
+
+.auth-shell {
+    width: min(960px, calc(100% - 2rem));
+    margin: 3.5rem auto;
+}
+
+.auth-intro {
+    max-width: 640px;
+    margin: 0 auto 2rem;
+    text-align: center;
+}
+
+.auth-shell > .auth-intro {
+    padding: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+}
+
+.eyebrow {
+    margin: 0 0 0.4rem;
+    color: var(--brand-dark);
+    font-size: 0.82rem;
+    font-weight: 750;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.auth-intro h1 {
+    margin: 0;
+    font-size: clamp(2rem, 5vw, 2.8rem);
+}
+
+.auth-intro > p:last-child,
+.auth-description {
+    color: var(--muted);
+    line-height: 1.55;
+}
+
+.auth-card {
+    padding: clamp(1.25rem, 4vw, 2rem);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: #fff;
+    box-shadow: 0 12px 32px rgb(23 43 58 / 7%);
+}
+
+.auth-shell > .auth-card {
+    max-width: 470px;
+    margin-inline: auto;
+}
+
+.auth-card h2 {
+    margin: 0.8rem 0 0;
+}
+
+.auth-card button {
+    width: 100%;
+}
+
+.login-status {
+    min-height: 1.3rem;
+    color: #a52c2c;
+}
+
+.demo-accounts {
+    margin-top: 1rem;
+    color: var(--muted);
+    line-height: 1.55;
+}
+
+.demo-accounts summary {
+    color: var(--brand-dark);
+    cursor: pointer;
+    font-weight: 650;
+}
+
+.future-note {
+    color: var(--muted);
+}
+
+.auth-notice {
+    margin: 1.2rem 0 0;
+    padding: 0.9rem 1rem;
+    border: 1px solid #e8d6a8;
+    border-radius: 9px;
+    background: #fff8e6;
+    color: #664f1c;
+    font-size: 0.92rem;
+    line-height: 1.5;
+}
+
+@media (max-width: 680px) {
+    .auth-shell {
+        margin-top: 2rem;
+    }
+
+    .site-header {
+        padding-inline: 1rem;
+    }
+
+    .account-controls {
+        flex-wrap: wrap;
+        justify-content: flex-end;
+    }
+}

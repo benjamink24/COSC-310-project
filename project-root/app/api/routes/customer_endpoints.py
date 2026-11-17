@@ -5,6 +5,19 @@ from app.schemas.customer import *
 router: APIRouter = APIRouter(prefix="/customer", tags=["customer"])
 customer: customerService = customerService()
 
+@router.post("/login",
+             response_model=customer_login_response_model,
+             summary="Authenticates a customer account")
+def login_customer(credentials: customer_login_model):
+    session = customer.authenticate_customer(
+        credentials.username,
+        credentials.password,
+    )
+    if session is None:
+        raise HTTPException(status_code=401, detail="Invalid username or password")
+    return session
+
+
 @router.get("/",
             response_model = list[external_viewer_model],
             summary="Lists customers only external inof avalible", # idea for res owners 
