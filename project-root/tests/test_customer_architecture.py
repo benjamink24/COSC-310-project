@@ -83,7 +83,7 @@ def test_create_and_update_restaurant(temp_data):
         "emailAddress": "Janedoe@gmail.com",
         "paymentMethod": "credit",
         "phoneNumber": "250 555 4567",
-        "username": "JDoe",
+        "username": "JDoe1",
         "password": "janeDoe"
 
     }
