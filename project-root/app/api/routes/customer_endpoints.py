@@ -18,6 +18,7 @@ def login_customer(credentials: customer_login_model):
     return session
 
 
+
 @router.get("/",
             response_model = list[external_viewer_model],
             summary="Lists customers only external inof avalible", # idea for res owners 
@@ -43,7 +44,7 @@ def list_customers(cId: int):
              response_model=customer_model,
              summary="create a new customer",
              description="Creates a new customer in the json file from the provided data which is vetted by the pydantic model", status_code=201)
-def create_restaurant(customer_data: add_customer_model):
+def create_customer(customer_data: add_customer_model):
     return customer.create_customer(customer_data.model_dump())
 
 
@@ -51,9 +52,9 @@ def create_restaurant(customer_data: add_customer_model):
 @router.put("/{cId}", 
             response_model=customer_model,
             summary="updates a customer",
-            description="Updates a restaurant in the json file from the provided data which is vetted by the pydantic model",status_code=201)
-def update_restaurant(cId: int, update_data: update_customer_model):
+            description="Updates a customer in the json file from the provided data which is vetted by the pydantic model",status_code=201)
+def update_customer(cId: int, update_data: update_customer_model):
     updated = customer.update_customer(cId, update_data.model_dump())
     if not updated:
-        raise HTTPException(status_code=404, detail="Restaurant not found")
+        raise HTTPException(status_code=404, detail="Customer not found")
     return updated

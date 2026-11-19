@@ -43,6 +43,7 @@ class customerRepo(AbstractRepository):
         return None
 
 
+
     def add_customer(self, customer_dict: dict) -> dict:
                 customers = self.get_all_customers()
                 if customers and "cId" in customers[-1]:

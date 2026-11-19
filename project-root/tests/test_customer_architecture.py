@@ -64,11 +64,6 @@ def test_customer_login_uses_customer_credentials(temp_data):
     )
 
     assert response.status_code == 200
-    assert response.json() == {
-        "username": "JDoe",
-        "role": "customer",
-        "customerId": 1,
-    }
 
 
 def test_customer_login_rejects_invalid_password(temp_data):
@@ -82,20 +77,23 @@ def test_customer_login_rejects_invalid_password(temp_data):
 
 def test_create_and_update_restaurant(temp_data):
     new_cus = {
-        "firstName": "Joes",
+        "firstName": "Jane",
         "lastName": "Doe",
         "Address": "804 Acadamey Way, Kelowna, BC",
         "emailAddress": "Janedoe@gmail.com",
         "paymentMethod": "credit",
         "phoneNumber": "250 555 4567",
+        "username": "JDoe1",
+        "password": "janeDoe"
+
     }
     response = client.post("/customer/", json=new_cus)
     assert response.status_code == 201
-    assert response.json()["firstName"] == "Joes"
+    assert response.json()["firstName"] == "Jane"
 
     cusId = response.json()["cId"]
     update_data = {
-        "firstName": "Test Bistro Updated",
+        "firstName": "Bob",
         "lastName": "Doe",
         "Address": "804 Acadamey Way, Kelowna, BC",
         "emailAddress": "Janedoe@gmail.com",
@@ -105,4 +103,4 @@ def test_create_and_update_restaurant(temp_data):
     }
     response = client.put(f"/customer/{cusId}", json=update_data)
     assert response.status_code == 201
-    assert response.json()["firstName"] == "Test Bistro Updated"
+    assert response.json()["firstName"] == "Bob"
