@@ -13,9 +13,10 @@ def login_customer(credentials: customer_login_model):
         credentials.username,
         credentials.password,
     )
-    if session is False:
+    if session is None:
         raise HTTPException(status_code=401, detail="Invalid username or password")
     return session
+
 
 
 @router.get("/",

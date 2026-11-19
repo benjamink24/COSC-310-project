@@ -60,3 +60,7 @@ class UsernameBloomFilter:
             if not (self.bit_array[byte_index] & (1 << bit_offset)):
                 return False
         return True
+
+    def clear(self):
+        """Reset the Bloom filter to an empty state."""
+        self.bit_array = bytearray(math.ceil(self.size / 8))
