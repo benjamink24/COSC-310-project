@@ -32,15 +32,15 @@ class customerRepo(AbstractRepository):
     def get_all_customers(self) -> list:
                 return self.get_all()
 
-    def get_by_credentials(self, username: str, password: str) -> dict | None:
+    def get_by_credentials(self, username: str, password: str) -> bool | None:
         for customer in self.get_all_customers():
             if (
                 customer.get("username") == username
                 and customer.get("password") == password
                 and customer.get("active", True)
             ):
-                return customer
-        return None
+                return True
+        return False
 
 
     def add_customer(self, customer_dict: dict) -> dict:

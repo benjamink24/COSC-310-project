@@ -46,3 +46,12 @@ Entry 14
 - Artifact: Fixing frontend
 - Label: AI-ASSISTED
 - Purpose: Used AI to add classes and ids to html files to add CSS integration.
+
+- Student(s): Ben Kelly
+- Artifact: bloom filter for username validation
+- Label: AI-GENERATED
+- AI tool: gemini
+- Purpose: to create a way to validate if a username exits with no false positives.
+- Influence: this class will be used in customer to validate usernames.
+- Validation: group mates inspected the generated code upon pr review
+- PR: 
