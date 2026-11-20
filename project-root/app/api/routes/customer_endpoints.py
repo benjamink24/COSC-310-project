@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends, Header, HTTPException, Response
-from app.services.customer_service import customerService
+from app.services.customer_service import customerService, customer_service
 from app.schemas.customer import *
 from app.api.dependencies import require_customer_authentication
 
 router: APIRouter = APIRouter(prefix="/customer", tags=["customer"])
-customer: customerService = customerService()
+customer: customerService = customer_service
 
 #logs in to cusotmmer accoint
 @router.post("/login",

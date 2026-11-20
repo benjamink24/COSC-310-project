@@ -14,7 +14,7 @@ class customer_login_response_model(BaseModel):
     username: str
     role: str
     cId: int
-    token: str
+    accesstoken: str
     tokenType: str
     expiresIn: int
 

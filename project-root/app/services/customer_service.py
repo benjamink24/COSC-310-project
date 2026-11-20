@@ -61,7 +61,8 @@ class customerService:
 
 
     def authenticate_customer(self, username: str, password: str) -> dict | None:
-            customer = self.repo.get_by_field(username)
+            customer = self.repo.get_by_field("username", username)
+            customer= customer[0] if customer else None
             if customer is None or not self._verify_password(
                 password, customer.get("password", "")
             ):
