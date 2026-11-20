@@ -58,6 +58,13 @@ cd project-root
 | GET | `/restaurants/{restaurant_name}/menu` | Returns restaurant menu |
 | GET | `/restaurants/{restaurant_name}/menu/{menu_item}` | Returns one menu item |
 | GET | `/restaurants/filter/{cuisine_type}` | Returns filtered restaurants by cuisine |
+| GET | `/cart/{cId}` | Returns a customer's cart and computed total, or 404 when they have no cart |
+| POST | `/cart/{cId}/items` | Adds a menu item to the cart; the price is read from the restaurant menu |
+| PUT | `/cart/{cId}/items/{item_name}` | Sets the quantity of an item already in the cart |
+| DELETE | `/cart/{cId}/items/{item_name}` | Removes one item from the cart |
+| DELETE | `/cart/{cId}` | Deletes the customer's whole cart |
+| POST | `/checkout/` | Turns the cart into an order, charges current menu prices, and empties the cart |
+| GET | `/checkout/history/{cId}` | Lists a customer's past orders, oldest first |
 
 
 ### /docs Path
