@@ -41,19 +41,143 @@
                     >
 
                     <button type="submit">Sign in</button>
-                    <p id="login-status" class="login-status" role="status"></p>
+                    <p>
+                        <button id="show-registration" type="button">
+                            Register a restaurant
+                        </button>
+                    </p>
                 </form>
+
+                <form id="owner-register-form" hidden>
+                    <h2>Restaurant owner registration</h2>
+                    <label for="owner-first-name">First name</label>
+                    <input id="owner-first-name" name="firstName" required maxlength="100">
+
+                    <label for="owner-last-name">Last name</label>
+                    <input id="owner-last-name" name="lastName" required maxlength="100">
+
+                    <label for="owner-address">Owner address</label>
+                    <input id="owner-address" name="Address" required maxlength="100">
+
+                    <label for="owner-email">Email</label>
+                    <input id="owner-email" name="emailAddress" type="email" required maxlength="100">
+
+                    <label for="owner-phone">Phone number</label>
+                    <input id="owner-phone" name="phoneNumber" type="tel" required maxlength="100">
+
+                    <label for="owner-username">Username</label>
+                    <input id="owner-username" name="username" required minlength="3" maxlength="100" autocomplete="username">
+
+                    <label for="owner-password">Password</label>
+                    <input id="owner-password" name="password" type="password" required minlength="8" maxlength="100" autocomplete="new-password">
+
+                    <h3>Restaurant information</h3>
+                    <label for="restaurant-name">Restaurant name</label>
+                    <input id="restaurant-name" name="restaurantName" required maxlength="100">
+
+                    <label for="restaurant-cuisine">Cuisine</label>
+                    <input id="restaurant-cuisine" name="cuisine" required maxlength="100">
+
+                    <label for="restaurant-address">Restaurant address</label>
+                    <input id="restaurant-address" name="restaurantAddress" required maxlength="100">
+
+                    <label for="restaurant-hours">Business hours</label>
+                    <input id="restaurant-hours" name="hours" required maxlength="100">
+
+                    <button type="submit">Create owner account</button>
+                    <p>
+                        <button id="show-login" type="button">Back to sign in</button>
+                    </p>
+                </form>
+                <p id="login-status" class="login-status" role="status"></p>
 
                 <details class="demo-accounts">
                     <summary>Development demo accounts</summary>
                     <p><strong>Customer:</strong> Use your customer username and password.</p>
                     <p><strong>Admin:</strong> username: admin, password: admin.</p>
-                    <p><strong>Restaurant:</strong> Use the exact restaurant name as both the username and password.</p>
+                    <p><strong>Restaurant owner:</strong> Use the account username and password stored with the owner record.</p>
                 </details>
             </section>
         </main>
 
         <script>
+            const loginForm = document.getElementById("login-form");
+            const registrationForm = document.getElementById("owner-register-form");
+            const status = document.getElementById("login-status");
+
+            document
+                .getElementById("show-registration")
+                .addEventListener("click", () => {
+                    loginForm.hidden = true;
+                    registrationForm.hidden = false;
+                    status.textContent = "";
+                });
+
+            document
+                .getElementById("show-login")
+                .addEventListener("click", () => {
+                    registrationForm.hidden = true;
+                    loginForm.hidden = false;
+                    status.textContent = "";
+                });
+
+            registrationForm.addEventListener("submit", async (event) => {
+                event.preventDefault();
+                const form = new FormData(registrationForm);
+                const submitButton = registrationForm.querySelector(
+                    "button[type='submit']"
+                );
+                const registration = {
+                    firstName: form.get("firstName").trim(),
+                    lastName: form.get("lastName").trim(),
+                    Address: form.get("Address").trim(),
+                    emailAddress: form.get("emailAddress").trim(),
+                    phoneNumber: form.get("phoneNumber").trim(),
+                    username: form.get("username").trim(),
+                    password: form.get("password"),
+                    restaurant: {
+                        Name: form.get("restaurantName").trim(),
+                        Cuisine: form.get("cuisine").trim(),
+                        Address: form.get("restaurantAddress").trim(),
+                        Hours: form.get("hours").trim(),
+                        Photos: [],
+                        menu: []
+                    }
+                };
+                submitButton.disabled = true;
+                status.textContent = "Creating account...";
+
+                try {
+                    const response = await fetch(
+                        "http://127.0.0.1:8000/restaurant-owners/register",
+                        {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify(registration)
+                        }
+                    );
+                    const result = await response.json();
+                    if (!response.ok) {
+                        const detail = result.detail;
+                        throw new Error(
+                            Array.isArray(detail)
+                                ? detail.map(issue => issue.msg).join(", ")
+                                : detail || "Could not create account."
+                        );
+                    }
+                    document.getElementById("username").value = registration.username;
+                    registrationForm.reset();
+                    registrationForm.hidden = true;
+                    loginForm.hidden = false;
+                    status.textContent = "Account created. Sign in to continue.";
+                } catch (error) {
+                    console.error("Registration failed:", error);
+                    status.textContent = error.message;
+                } finally {
+                    submitButton.disabled = false;
+                }
+            });
+
             document
                 .getElementById("login-form")
                 .addEventListener("submit", async (event) => {
@@ -64,7 +188,6 @@
                         .value
                         .trim();
                     const password = document.getElementById("password").value;
-                    const status = document.getElementById("login-status");
                     const submitButton = event.currentTarget.querySelector(
                         "button[type='submit']"
                     );
@@ -96,36 +219,29 @@
                             }
                         }
 
-                        if (!session && username === "admin" && password === "admin") {
-                            session = { username, role: "admin" };
-                        }
-
-                        if (!session) {
-                            const response = await fetch(
-                                "http://127.0.0.1:8000/restaurants/"
+                        if (!session && username !== "admin") {
+                            const ownerResponse = await fetch(
+                                "http://127.0.0.1:8000/restaurant-owners/login",
+                                {
+                                    method: "POST",
+                                    headers: {
+                                        "Content-Type": "application/json"
+                                    },
+                                    body: JSON.stringify({ username, password })
+                                }
                             );
 
-                            if (!response.ok) {
+                            if (ownerResponse.ok) {
+                                session = await ownerResponse.json();
+                            } else if (ownerResponse.status !== 401) {
                                 throw new Error(
-                                    `Could not load restaurant accounts (HTTP ${response.status}).`
+                                    `Could not check restaurant owner account (HTTP ${ownerResponse.status}).`
                                 );
                             }
+                        }
 
-                            const restaurants = await response.json();
-                            const restaurant = restaurants.find(
-                                entry =>
-                                    entry.Name === username &&
-                                    entry.Name === password
-                            );
-
-                            if (restaurant) {
-                                session = {
-                                    username,
-                                    role: "restaurant",
-                                    restaurantId: restaurant.id,
-                                    restaurantName: restaurant.Name
-                                };
-                            }
+                        if (!session && username === "admin" && password === "admin") {
+                            session = { username, role: "admin" };
                         }
 
                         if (!session) {

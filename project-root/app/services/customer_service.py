@@ -1,5 +1,5 @@
 from app.repositories.customer_repo import customerRepo
-from email_validator import EmailNotValidError, validate_email
+from app.email_validation import is_valid_email
 from app.bloom import UsernameBloomFilter as bloom
 from fastapi import HTTPException
 
@@ -45,9 +45,7 @@ class customerService:
 
     @staticmethod
     def validate_email(email : str):
-        try:
-            validate_email(email,check_deliverability = False)
-        except EmailNotValidError as e:
+        if not is_valid_email(email):
             raise HTTPException(status_code=422, detail="Unacceptable email")
 
     @staticmethod

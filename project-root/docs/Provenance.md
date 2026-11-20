@@ -54,4 +54,18 @@ Entry 14
 - Purpose: to create a way to validate if a username exits with no false positives.
 - Influence: this class will be used in customer to validate usernames.
 - Validation: group mates inspected the generated code upon pr review
-- PR: 
+- PR:
+
+Student: Manhar Khurana
+Artifact: Adding tests for restuarant owner management
+Label: AI-Generated
+AI tool: Gemini
+Purpose: To create tests to make sure everything works well. And everything works
+Validation: Code will be previewed by group mates
+
+Student: Manhar Khurana
+Artifact: Adding artifical data for restuarnt owner and restuarants
+Label: AI-Generated
+AI tool: Gemini
+Purpose: To create proper data to work with
+Validation: Code will be previewed by group mates

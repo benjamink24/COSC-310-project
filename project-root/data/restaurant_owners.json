@@ -1,0 +1,57 @@
+[
+    {
+        "ownerId": 1,
+        "firstName": "Jamie",
+        "lastName": "Morgan",
+        "emailAddress": "jamie.morgan@example.com",
+        "phoneNumber": "250-555-0101",
+        "username": "jamie_morgan_7",
+        "restaurantId": 7,
+        "Address": "107 Example Lane, Kelowna, BC",
+        "passwordHash": "pbkdf2_sha256$310000$bbd6000b335f034a00fbb0c450348f44$75503ef9996ab046839c405ca25750207ac53c57055ac6e6ff95b2ed488cf981"
+    },
+    {
+        "ownerId": 2,
+        "firstName": "Avery",
+        "lastName": "Bennett",
+        "emailAddress": "avery.bennett@example.com",
+        "phoneNumber": "250-555-0102",
+        "username": "avery_bennett_1",
+        "restaurantId": 1,
+        "Address": "101 Example Lane, Kelowna, BC",
+        "passwordHash": "pbkdf2_sha256$310000$a37c5983c5e332e012a43a4f45f3c193$7daf6dfbb9209d3767b7e2408ba0d6c4663eaa24219eb000256af8b6c775785b"
+    },
+    {
+        "ownerId": 3,
+        "firstName": "Riley",
+        "lastName": "Chen",
+        "emailAddress": "riley.chen@example.com",
+        "phoneNumber": "250-555-0103",
+        "username": "riley_chen_2",
+        "restaurantId": 2,
+        "Address": "102 Example Lane, Kelowna, BC",
+        "passwordHash": "pbkdf2_sha256$310000$7b6bec60a30872107880b44b25ef4093$0e94264ed6e9b1e8338315f9443a62ca94622523442ba508149232c5f0272deb"
+    },
+    {
+        "ownerId": 4,
+        "firstName": "Casey",
+        "lastName": "Patel",
+        "emailAddress": "casey.patel@example.com",
+        "phoneNumber": "250-555-0104",
+        "username": "casey_patel_3",
+        "restaurantId": 3,
+        "Address": "103 Example Lane, Kelowna, BC",
+        "passwordHash": "pbkdf2_sha256$310000$f6ba3bcc68130b015a11e8afd6e7edc6$6d605c7b319139758d4a6eb96660be048b6eadbe162850c2d490c01406fce98b"
+    },
+    {
+        "ownerId": 5,
+        "firstName": "Taylor",
+        "lastName": "Reed",
+        "emailAddress": "taylor.reed@example.com",
+        "phoneNumber": "250-555-0105",
+        "username": "taylor_reed_4",
+        "restaurantId": 4,
+        "Address": "104 Example Lane, Kelowna, BC",
+        "passwordHash": "pbkdf2_sha256$310000$fe9453c327d273153f2e6677fb041f32$cae149f62899f0f56369cbb642bc13e7c12daa355236fe61a5d32c438264e3f7"
+    }
+]
