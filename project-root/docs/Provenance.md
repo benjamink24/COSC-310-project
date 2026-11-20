@@ -62,3 +62,10 @@ Label: AI-Generated
 AI tool: Gemini
 Purpose: To create tests to make sure everything works well. And everything works
 Validation: Code will be previewed by group mates
+
+Student: Manhar Khurana
+Artifact: Adding artifical data for restuarnt owner and restuarants
+Label: AI-Generated
+AI tool: Gemini
+Purpose: To create proper data to work with
+Validation: Code will be previewed by group mates
