@@ -8,9 +8,9 @@
         "phoneNumber": "250 555 4567",
         "orderHistory": [],
         "active": true,
-        "cId": 1,
         "username": "JDoe",
-        "password": "janeDoe"
+        "password": "janeDoe",
+        "cId": 1
     },
 {
     "firstName": "Michael",
@@ -21,8 +21,8 @@
     "phoneNumber": "250 555 9876",
     "orderHistory": [],
     "active": true,
-    "cId": 2,
     "username": "MSmith",
-    "password": "michaelSmith"
+    "password": "michaelSmith",
+    "cId": 2
 }
 ]
