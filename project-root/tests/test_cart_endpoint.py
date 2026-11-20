@@ -6,8 +6,13 @@ from fastapi.testclient import TestClient
 
 from app.main import app
 from app.api.routes import cart_endpoints, checkout_endpoints, customer_endpoints
+from app.services.customer_service import customerService
 
 client = TestClient(app)
+
+PASSWORD = "Password1"
+# customers are stored with hashed passwords; hash once per file because it is slow on purpose
+HASHED_PASSWORD = customerService._hash_password(PASSWORD)
 
 def _customer(cId, firstName):
     return {
@@ -20,12 +25,27 @@ def _customer(cId, firstName):
         "phoneNumber": "250 555 4567",
         "orderHistory": [],
         "active": True,
+        "username": firstName,
+        "password": HASHED_PASSWORD,
     }
 
 CUSTOMER_SEED = [
     _customer(1, "Jane"),
     _customer(3, "Sam"),
 ]
+
+USERNAME = {c["cId"]: c["username"] for c in CUSTOMER_SEED}
+_tokens = {}
+
+def login(cId):
+    """Log in through the real /customer/login endpoint and return the Authorization
+    header. The token is reused for the rest of the file, because hashing makes
+    every login take a moment."""
+    if cId not in _tokens:
+        response = client.post("/customer/login", json={"username": USERNAME[cId], "password": PASSWORD})
+        assert response.status_code == 200, response.text
+        _tokens[cId] = response.json()["accessToken"]
+    return {"Authorization": f"Bearer {_tokens[cId]}"}
 
 RESTAURANT_SEED = [
     {
@@ -82,19 +102,20 @@ def data_files(tmp_path, monkeypatch):
 
 def add(client, cId=1, restaurantId=1, Name="Grilled Salmon", quantity=2):
     return client.post(
-        f"/cart/{cId}/items",
+        "/cart/me/items",
         json={"restaurantId": restaurantId, "Name": Name, "quantity": quantity},
+        headers=login(cId),
     )
 
-# ---------- GET /cart/{cId} ----------
+# ---------- GET /cart/me ----------
 def test_get_cart_with_no_cart_returns_404():
-    response = client.get("/cart/1")
+    response = client.get("/cart/me", headers=login(1))
     assert response.status_code == 404
     assert response.json()["detail"] == "cart not found"
 
 def test_get_cart_returns_what_was_added():
     add(client)
-    response = client.get("/cart/1")
+    response = client.get("/cart/me", headers=login(1))
     assert response.status_code == 200
     assert response.json() == {
         "cId": 1,
@@ -103,7 +124,7 @@ def test_get_cart_returns_what_was_added():
         "total": 64.0,
     }
 
-# ---------- POST /cart/{cId}/items ----------
+# ---------- POST /cart/me/items ----------
 def test_add_item_returns_201_and_the_cart():
     response = add(client)
     assert response.status_code == 201
@@ -126,7 +147,7 @@ def test_add_item_returns_201_and_the_cart():
     ],
 )
 def test_add_item_invalid_body_returns_422(body):
-    assert client.post("/cart/1/items", json=body).status_code == 422
+    assert client.post("/cart/me/items", json=body, headers=login(1)).status_code == 422
 
 def test_add_unavailable_item_returns_409():
 
@@ -137,7 +158,7 @@ def test_add_item_from_other_restaurant_returns_409_and_cart_is_unchanged():
     response = add(client, restaurantId=2, Name="French Toast", quantity=1)
     assert response.status_code == 409
 
-    cart = client.get("/cart/1").json()
+    cart = client.get("/cart/me", headers=login(1)).json()
     assert cart["restaurantId"] == 1
     assert len(cart["items"]) == 1
 
@@ -147,10 +168,10 @@ def test_add_item_is_written_to_the_cart_file(data_files):
     assert len(saved) == 1
     assert saved[0]["cId"] == 1
 
-# ---------- PUT /cart/{cId}/items/{item_name} ----------
+# ---------- PUT /cart/me/items/{item_name} ----------
 def test_update_item_quantity():
     add(client, quantity=2)
-    response = client.put("/cart/1/items/Grilled%20Salmon", json={"quantity": 5})
+    response = client.put("/cart/me/items/Grilled%20Salmon", json={"quantity": 5}, headers=login(1))
     assert response.status_code == 200
     assert response.json()["items"][0]["quantity"] == 5
     assert response.json()["total"] == 160.0
@@ -158,32 +179,55 @@ def test_update_item_quantity():
 @pytest.mark.parametrize("bad_quantity", [0, -1, "two"])
 def test_update_item_invalid_quantity_returns_422(bad_quantity):
     add(client)
-    response = client.put("/cart/1/items/Grilled%20Salmon", json={"quantity": bad_quantity})
+    response = client.put("/cart/me/items/Grilled%20Salmon", json={"quantity": bad_quantity}, headers=login(1))
     assert response.status_code == 422
 
 def test_update_item_not_in_cart_returns_404():
     add(client, Name="Grilled Salmon")
-    response = client.put("/cart/1/items/Beef%20Tenderloin", json={"quantity": 2})
+    response = client.put("/cart/me/items/Beef%20Tenderloin", json={"quantity": 2}, headers=login(1))
     assert response.status_code == 404
 
-# ---------- DELETE /cart/{cId}/items/{item_name} ----------
+# ---------- DELETE /cart/me/items/{item_name} ----------
 def test_remove_item():
     add(client, Name="Grilled Salmon")
     add(client, Name="Beef Tenderloin", quantity=1)
-    response = client.delete("/cart/1/items/Grilled%20Salmon")
+    response = client.delete("/cart/me/items/Grilled%20Salmon", headers=login(1))
     assert response.status_code == 200
     assert [i["Name"] for i in response.json()["items"]] == ["Beef Tenderloin"]
 
 def test_remove_item_not_in_cart_returns_404():
     add(client, Name="Grilled Salmon")
-    assert client.delete("/cart/1/items/Beef%20Tenderloin").status_code == 404
+    assert client.delete("/cart/me/items/Beef%20Tenderloin", headers=login(1)).status_code == 404
 
-# ---------- DELETE /cart/{cId} ----------
+# ---------- DELETE /cart/me ----------
 def test_clear_cart_returns_204_and_removes_it():
     add(client)
-    response = client.delete("/cart/1")
+    response = client.delete("/cart/me", headers=login(1))
     assert response.status_code == 204
-    assert client.get("/cart/1").status_code == 404
+    assert client.get("/cart/me", headers=login(1)).status_code == 404
 
 def test_clear_cart_with_no_cart_returns_404():
-    assert client.delete("/cart/1").status_code == 404
+    assert client.delete("/cart/me", headers=login(1)).status_code == 404
+
+# ---------- authentication ----------
+@pytest.mark.parametrize(
+    "method, path, body",
+    [
+        ("get", "/cart/me", None),
+        ("post", "/cart/me/items", {"restaurantId": 1, "Name": "Grilled Salmon", "quantity": 1}),
+        ("put", "/cart/me/items/Grilled%20Salmon", {"quantity": 1}),
+        ("delete", "/cart/me/items/Grilled%20Salmon", None),
+        ("delete", "/cart/me", None),
+    ],
+)
+def test_cart_routes_require_login(method, path, body):
+    kwargs = {"json": body} if body is not None else {}
+    assert getattr(client, method)(path, **kwargs).status_code == 401
+
+def test_cart_rejects_unknown_token():
+    response = client.get("/cart/me", headers={"Authorization": "Bearer not-a-real-token"})
+    assert response.status_code == 401
+
+def test_cart_belongs_to_the_logged_in_customer():
+    add(client, cId=1)
+    assert client.get("/cart/me", headers=login(3)).status_code == 404
