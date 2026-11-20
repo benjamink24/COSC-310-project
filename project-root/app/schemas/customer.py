@@ -44,6 +44,8 @@ class update_customer_model(BaseModel):
     emailAddress: str = Field(min_length=1, max_length=100)
     paymentMethod: str = Field(min_length=1, max_length=100)
     phoneNumber: str = Field(min_length=1, max_length=100)
+    username: str = Field(min_length=1, max_length=100)
+    password: str = Field(min_length=1, max_length=100)
     active: bool
     
 

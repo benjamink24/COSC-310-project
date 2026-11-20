@@ -28,7 +28,7 @@ class resService:
         return self.repo.get_restaurants_by_id(restaurant_id)
 
     def get_menu_items(self, restaurant_id: int, menu_item: str) -> list:
-        return self.repo.get_menu_items(restaurant_id,menu_item)
+        return self.repo.get_menu_items(restaurant_id, menu_item)
 
            
 
