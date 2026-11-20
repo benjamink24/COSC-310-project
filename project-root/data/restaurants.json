@@ -27,7 +27,8 @@
                 "Price": 36.0,
                 "Availability": false
             }
-        ]
+        ],
+        "ownerId": 2
     },
     {
         "id": 2,
@@ -57,7 +58,8 @@
                 "Price": 15.0,
                 "Availability": false
             }
-        ]
+        ],
+        "ownerId": 3
     },
     {
         "id": 3,
@@ -92,7 +94,8 @@
                 "Price": 23.0,
                 "Availability": false
             }
-        ]
+        ],
+        "ownerId": 4
     },
     {
         "id": 4,
@@ -122,24 +125,17 @@
                 "Price": 22.0,
                 "Availability": false
             }
-        ]
+        ],
+        "ownerId": 5
     },
     {
-        "Name": "string",
-        "Cuisine": "string",
-        "Address": "string",
-        "Hours": "string",
+        "Name": "McDonalds",
+        "Cuisine": "Fast Food",
+        "Address": "Address",
+        "Hours": "24 Hours",
         "Photos": [],
         "menu": [],
-        "id": 5
-    },
-    {
-        "Name": "string",
-        "Cuisine": "string",
-        "Address": "string",
-        "Hours": "string",
-        "Photos": [],
-        "menu": [],
-        "id": 6
+        "ownerId": 1,
+        "id": 7
     }
 ]

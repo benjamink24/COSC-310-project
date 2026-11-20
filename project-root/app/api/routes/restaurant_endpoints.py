@@ -1,9 +1,22 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 from app.services.restaurant_service import resService
 from app.schemas.restaurant import *
+from app.api.dependencies import require_restaurant_owner
 
 router: APIRouter = APIRouter(prefix="/restaurants", tags=["restaurants"])
 restaurant: resService = resService()
+
+
+def _require_restaurant_owner_access(restaurant_id: int, session: dict) -> dict:
+    record = restaurant.get_restaurants_by_id(restaurant_id)
+    if record is None:
+        raise HTTPException(status_code=404, detail="Restaurant not found")
+    if str(record.get("ownerId")) != str(session["ownerId"]):
+        raise HTTPException(
+            status_code=403,
+            detail="You can only manage your own restaurant",
+        )
+    return record
 
 
 # 1. GET all restaurants (Working)
@@ -23,8 +36,13 @@ def list_restaurants():
              response_model=restaurant_model,
              summary="create a new reastaurant",
              description="Creates a new restaurant in the json file from the provided data which is vetted by the pydantic model", status_code=201)
-def create_restaurant(restaurant_data: restaurant_model):
-    return restaurant.create_restaurant(restaurant_data.model_dump())
+def create_restaurant(
+    restaurant_data: restaurant_model,
+    session: dict = Depends(require_restaurant_owner),
+):
+    restaurant_data_dict = restaurant_data.model_dump()
+    restaurant_data_dict["ownerId"] = session["ownerId"]
+    return restaurant.create_restaurant(restaurant_data_dict)
 
 
 # 3. UPDATE a restaurant (Fixes 405 if missing)
@@ -32,7 +50,12 @@ def create_restaurant(restaurant_data: restaurant_model):
             response_model=restaurant_model,
             summary="updates a reastaurant",
             description="Updates a restaurant in the json file from the provided data which is vetted by the pydantic model",status_code=201)
-def update_restaurant(rest_id: int, update_data: restaurant_model):
+def update_restaurant(
+    rest_id: int,
+    update_data: restaurant_model,
+    session: dict = Depends(require_restaurant_owner),
+):
+    _require_restaurant_owner_access(rest_id, session)
     updated = restaurant.update_restaurant(rest_id, update_data.model_dump())
     if not updated:
         raise HTTPException(status_code=404, detail="Restaurant not found")
@@ -44,7 +67,12 @@ def update_restaurant(rest_id: int, update_data: restaurant_model):
              response_model=restaurant_model,
              summary="creates a menu item",
              description="Updates a restaurant in the json file from the provided data which is vetted by the pydantic model",status_code=201)
-def add_menu_item(res_id: int, menu_item: menu_model):
+def add_menu_item(
+    res_id: int,
+    menu_item: menu_model,
+    session: dict = Depends(require_restaurant_owner),
+):
+    _require_restaurant_owner_access(res_id, session)
     updated = restaurant.add_menu_item(res_id, menu_item.model_dump())
     if not updated:
         raise HTTPException(status_code=404, detail="Restaurant not found")
@@ -55,7 +83,13 @@ def add_menu_item(res_id: int, menu_item: menu_model):
             summary="Updates a menu item",
             description="Updates a menu item in the json file from the provided data which is vetted by the pydantic model", 
             response_model=restaurant_model)
-def update_menu_item(res_id: int, item_name: str, menu_item_update: menu_model):
+def update_menu_item(
+    res_id: int,
+    item_name: str,
+    menu_item_update: menu_model,
+    session: dict = Depends(require_restaurant_owner),
+):
+    _require_restaurant_owner_access(res_id, session)
     updated = restaurant.update_menu_item(
         res_id, item_name, menu_item_update.model_dump()
     )

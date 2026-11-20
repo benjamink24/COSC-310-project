@@ -1,5 +1,6 @@
 
 const SESSION_KEY = "manharEatsSession";
+const API_URL = "http://127.0.0.1:8000";
 
 function readCurrentUser() {
     const storedSession = sessionStorage.getItem(SESSION_KEY);
@@ -79,11 +80,30 @@ if (!currentUser) {
 }
 
 document.getElementById("logout-button").addEventListener("click", () => {
-    sessionStorage.removeItem(SESSION_KEY);
-    window.location.replace("login.html");
+    const finishLogout = () => {
+        sessionStorage.removeItem(SESSION_KEY);
+        window.location.replace("login.html");
+    };
+    const accessToken = currentUser && currentUser.accessToken;
+    if (!accessToken) {
+        finishLogout();
+        return;
+    }
+
+    fetch(`${API_URL}/restaurant-owners/logout`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${accessToken}` }
+    })
+        .catch(error => console.error("Could not end server session:", error))
+        .finally(finishLogout);
 });
 
-const API_URL = "http://127.0.0.1:8000";
+function ownerAuthHeaders(headers = {}) {
+    if (currentUser && currentUser.accessToken) {
+        headers.Authorization = `Bearer ${currentUser.accessToken}`;
+    }
+    return headers;
+}
 
 const operationSelect = document.getElementById("operation");
 const menuOperationSelect = document.getElementById("menu-operation");
@@ -666,9 +686,9 @@ restaurantForm.addEventListener("submit", async (event) => {
 
         const response = await fetch(url, {
             method: method,
-            headers: {
+            headers: ownerAuthHeaders({
                 "Content-Type": "application/json"
-            },
+            }),
             body: JSON.stringify(restaurantData)
         });
 
@@ -932,9 +952,9 @@ async function saveMenuItem(event) {
 
         const response = await fetch(url, {
             method: method,
-            headers: {
+            headers: ownerAuthHeaders({
                 "Content-Type": "application/json"
-            },
+            }),
             body: JSON.stringify(menuData)
         });
 

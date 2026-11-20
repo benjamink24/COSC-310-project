@@ -44,6 +44,10 @@ cd project-root
 | Method | Path | Description |
 |---|---|---|
 | GET | `/health` | Checks whether the application is running |
+| POST | `/restaurant-owners/register` | Creates a restaurant owner account and its associated restaurant |
+| POST | `/restaurant-owners/login` | Authenticates an owner and returns a one-hour bearer session |
+| GET | `/restaurant-owners/me` | Returns the authenticated owner and associated restaurant |
+| POST | `/restaurant-owners/logout` | Revokes the authenticated owner session |
 | GET | `/restaurants` | Returns available restaurants |
 | GET | `/docs` | Returns documentation |
 | POST | `/restaurants` | Returns a new created restaurant |
@@ -64,6 +68,8 @@ http://127.0.0.1:8000/docs
 ### Location of Representative Data
 
 project-root\data\restaurants.json
+Restaurant owner accounts are persisted in `project-root\data\restaurant_owners.json`.
+Owner passwords are stored as salted PBKDF2 hashes. Restaurant updates and menu changes require the bearer token returned by owner login; sessions are held in memory and expire after one hour.
 
 ### How to run Tests
 
