@@ -59,3 +59,15 @@ def logout_restaurant_owner(
     _, _, access_token = authorization.partition(" ")
     owner.revoke_session(access_token.strip())
     return Response(status_code=204)
+
+
+@router.post(
+    "/deactivate",
+    status_code=204,
+    summary="Deactivate the authenticated owner and restaurant",
+)
+def deactivate_restaurant_owner(
+    session: dict = Depends(require_restaurant_owner),
+):
+    owner.deactivate_owner(session["ownerId"])
+    return Response(status_code=204)

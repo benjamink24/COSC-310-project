@@ -47,9 +47,16 @@ class resRepo(AbstractRepository):
     def get_all_restaurants(self) -> list:
         return self.get_all()
 
-    def get_restaurants_by_id(self, restaurant_id) -> dict:
+    def get_restaurants_by_id(
+        self, restaurant_id, include_inactive: bool = False
+    ) -> dict | None:
         results = self.get_by_field("id", restaurant_id)
-        return results[0] if results else None
+        if not results:
+            return None
+        restaurant = results[0]
+        if not include_inactive and restaurant.get("active", True) is False:
+            return None
+        return restaurant
 
     def get_restaurants_by_cuisine_type(self, cuisine_type: str) -> list:
         return self.get_by_field("Cuisine", cuisine_type)

@@ -234,3 +234,47 @@ def test_expired_owner_session_is_rejected(temporary_account_files):
     )
 
     assert response.status_code == 401
+
+
+def test_deactivation_requires_authenticated_owner(temporary_account_files):
+    response = client.post("/restaurant-owners/deactivate")
+
+    assert response.status_code == 401
+
+
+def test_deactivation_disables_owner_and_restaurant_persistently(
+    temporary_account_files,
+):
+    owners_file, restaurants_file = temporary_account_files
+    _, session = register_owner("deactivate-owner", "Restaurant to Deactivate")
+    headers = {"Authorization": f"Bearer {session['accessToken']}"}
+    restaurant_id = session["restaurantId"]
+
+    response = client.post("/restaurant-owners/deactivate", headers=headers)
+
+    assert response.status_code == 204
+    owners = json.loads(owners_file.read_text(encoding="utf-8"))
+    restaurants = json.loads(restaurants_file.read_text(encoding="utf-8"))
+    owner_record = next(item for item in owners if item["ownerId"] == session["ownerId"])
+    restaurant_record = next(
+        item for item in restaurants if item["id"] == restaurant_id
+    )
+    assert owner_record["active"] is False
+    assert restaurant_record["active"] is False
+
+    assert client.post(
+        "/restaurant-owners/login",
+        json={"username": session["username"], "password": "StrongPass123"},
+    ).status_code == 401
+    assert client.get("/restaurant-owners/me", headers=headers).status_code == 401
+    assert client.get("/restaurants/").json() == []
+    assert client.get(f"/restaurants/{restaurant_id}").status_code == 404
+    assert client.get(f"/restaurants/{restaurant_id}/menu").status_code == 404
+
+
+def test_deactivated_account_cannot_deactivate_again(temporary_account_files):
+    _, session = register_owner("deactivate-twice-owner", "Deactivated Restaurant")
+    headers = {"Authorization": f"Bearer {session['accessToken']}"}
+
+    assert client.post("/restaurant-owners/deactivate", headers=headers).status_code == 204
+    assert client.post("/restaurant-owners/deactivate", headers=headers).status_code == 401

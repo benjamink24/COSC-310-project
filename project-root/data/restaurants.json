@@ -136,6 +136,7 @@
         "Photos": [],
         "menu": [],
         "ownerId": 1,
-        "id": 7
+        "id": 7,
+        "active": false
     }
 ]
