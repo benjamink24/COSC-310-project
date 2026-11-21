@@ -138,5 +138,21 @@
         "ownerId": 1,
         "id": 7,
         "active": false
+    },
+    {
+        "Name": "Pasta Galore",
+        "Cuisine": "Italian",
+        "Address": "1011 Stephenson Street",
+        "Hours": "12:00PM - 8:00PM",
+        "Photos": [],
+        "menu": [
+            {
+                "Name": "Alfredo Penne",
+                "Price": 31.2,
+                "Availability": true
+            }
+        ],
+        "ownerId": 6,
+        "id": 8
     }
 ]

@@ -25,9 +25,61 @@
                 <h2>Customer account</h2>
                 <p id="customer-status" role="status">Loading your account...</p>
                 <div id="customer-profile"></div>
-                <p class="future-note">
-                    Your cart and checkout features can be added here later.
-                </p>
+                <form id="customer-update-form">
+                    <h3>Update profile</h3>
+                    <label for="customer-first-name">First name</label>
+                    <input id="customer-first-name" name="firstName" required maxlength="100">
+                    <label for="customer-last-name">Last name</label>
+                    <input id="customer-last-name" name="lastName" required maxlength="100">
+                    <label for="customer-address">Address</label>
+                    <input id="customer-address" name="Address" required maxlength="100">
+                    <label for="customer-email">Email</label>
+                    <input id="customer-email" name="emailAddress" type="email" required maxlength="100">
+                    <label for="customer-phone">Phone number</label>
+                    <input id="customer-phone" name="phoneNumber" required maxlength="100">
+                    <label for="customer-payment">Payment method</label>
+                    <select id="customer-payment" name="paymentMethod">
+                        <option value="credit">credit</option>
+                        <option value="debit">debit</option>
+                    </select>
+                    <label for="customer-username">Username</label>
+                    <input id="customer-username" name="username" required maxlength="100">
+                    <label for="customer-password">Password</label>
+                    <input id="customer-password" name="password" type="password" required maxlength="100" autocomplete="new-password">
+                    <button type="submit">Update profile</button>
+                </form>
+                <p id="customer-update-status" role="status"></p>
+                <button id="deactivate-customer-button" type="button">Deactivate account</button>
+
+                <section id="cart-panel" aria-labelledby="cart-heading">
+                    <h3 id="cart-heading">Your cart</h3>
+                    <p id="cart-status" role="status"></p>
+                    <div id="cart-lines"></div>
+                    <p id="cart-total"></p>
+                    <button id="clear-cart-button" type="button" hidden>Clear cart</button>
+                </section>
+
+                <section id="checkout-panel" aria-labelledby="checkout-heading">
+                    <h3 id="checkout-heading">Checkout</h3>
+                    <form id="checkout-form">
+                        <label for="payment-method">Payment method</label>
+                        <input
+                            id="payment-method"
+                            name="paymentMethod"
+                            type="text"
+                            maxlength="100"
+                            required
+                        >
+                        <button type="submit" disabled>Place order</button>
+                    </form>
+                    <p id="checkout-status" role="status"></p>
+                </section>
+
+                <section id="order-history-panel" aria-labelledby="history-heading">
+                    <h3 id="history-heading">Order history</h3>
+                    <p id="history-status" role="status"></p>
+                    <div id="order-history"></div>
+                </section>
             </section>
 
             <div id="restaurant-app" hidden>
@@ -121,6 +173,6 @@
             </div>
         </main>
 
-        <script src="script.js"></script>
+        <script type="module" src="js/main.js"></script>
     </body>
 </html>

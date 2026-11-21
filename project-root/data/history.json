@@ -1,1 +1,36 @@
-[]
+{
+    "orders": [
+        {
+            "cId": 3,
+            "restaurantId": 1,
+            "items": [
+                {
+                    "Name": "Grilled Salmon",
+                    "Price": 32.0,
+                    "quantity": 2
+                }
+            ],
+            "total": 64.0,
+            "paymentMethod": "credit",
+            "status": "placed",
+            "timestamp": "2026-11-20T21:58:09.709055",
+            "orderId": 1
+        },
+        {
+            "cId": 5,
+            "restaurantId": 1,
+            "items": [
+                {
+                    "Name": "Grilled Salmon",
+                    "Price": 32.0,
+                    "quantity": 1
+                }
+            ],
+            "total": 32.0,
+            "paymentMethod": "credit",
+            "status": "placed",
+            "timestamp": "2026-11-20T22:59:15.688276",
+            "orderId": 2
+        }
+    ]
+}
