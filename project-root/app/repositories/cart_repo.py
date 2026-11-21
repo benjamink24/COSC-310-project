@@ -45,12 +45,25 @@ class cartRepo(AbstractRepository):
 
     def add_cart(self, cart_dict: dict) -> dict:
                 carts = self.get_all_carts()
-                if carts and "cId" in carts[-1]:
-                    new_id = int(carts[-1]["cId"]) + 1
+                if "cId" in cart_dict and cart_dict["cId"] not in (None, ""):
+                     cid = cart_dict["cId"]
                 else:
-                    new_id = 1
-                cart_dict["cId"] = new_id
-                carts.append(cart_dict)
+                     ids = []
+                     for c in carts:
+                          if "cId" in c:
+                            try:
+                                ids.append(int(c["cId"]))
+                            except (TypeError, ValueError):
+                                pass
+                     cid =max(ids) + 1 if ids else 1
+
+                cart = {**cart_dict, "cId": cid}
+                for i, existing in enumerate(carts):
+                    if str(existing.get("cId")) == str(cid):
+                        cart[i] = cart
+                        break
+                    else:
+                        carts.append(cart)
                 self.save_all(carts)
                 return cart_dict
 
