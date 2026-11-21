@@ -9,7 +9,7 @@
         "orderHistory": [],
         "active": true,
         "username": "JDoe",
-        "password": "janeDoe",
+        "password": "pbkdf2_sha256$310000$f23c342f261414457dfa613caa00d6ea$abe70b9305ca785d3a55cb2c9f7f2a4098ea853078bd4a1ad5c6316a14df5a37",
         "cId": 1
     },
     {
@@ -22,7 +22,7 @@
         "orderHistory": [],
         "active": true,
         "username": "MSmith",
-        "password": "michaelSmith",
+        "password": "pbkdf2_sha256$310000$f82a2fe4abaf40eae563deda34d69476$a244b15bdccd36c1c9e69d8e35f6d9384de509d2269cea81e617a91311e85515",
         "cId": 2
     },
     {
