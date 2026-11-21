@@ -50,5 +50,18 @@
         "orderHistory": [],
         "active": false,
         "cId": 4
+    },
+    {
+        "firstName": "Jim",
+        "lastName": "Plingus",
+        "Address": "6767 Playground Street",
+        "emailAddress": "jimplingus@gmail.com",
+        "paymentMethod": "credit",
+        "phoneNumber": "250-994-2390",
+        "username": "JimPlingus",
+        "password": "pbkdf2_sha256$310000$6c4d83d69d4017a29a1cbb5ead229119$8ff24e8deb827b89994eb16b3946e029f0f288aa05e3c26d41f23e579c7d1571",
+        "orderHistory": [],
+        "active": true,
+        "cId": 5
     }
 ]

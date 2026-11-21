@@ -96,13 +96,14 @@ AI tool: Gemini
 Purpose: To create tests to make sure everything works well. And everything works
 Validation: Code will be previewed by group mates
 
-Enrty 20
+Entry 20
 Student: Kai Maleniza
 Artifact: m2-sprint md
 Label: AI-Assisted
 AI Tool: Gemini
 Purpose: Assisted help with our M2 sprint md
 Validation: Will be peer reviewed for any mistakes
+PR: 162
 
 
 Enrty 21
@@ -126,3 +127,21 @@ Enrty 22
 - PR: 171
 
 entry 16 and 19 tests from those artifact were adapted for use in other artifacts by ben kelly code was refactored to work by hand but the original testing code was ai generated as stated in the above. purpose was to co-op tests for simmilar classes and refactor for those test to work on diffrent cirtira. validation team mate reveiw upon pr 171, 182: artifact test_customer_auth
+
+Entry 23
+Student: Kai Maleniza
+Artifact: cross-subsystem business rules
+Label: AI-Assisted
+AI Tool: Gemini
+Purpose: Assisted help confirming if we needed any of the business rules
+Validation: Will be peer reviewed for any mistakes
+PR: 173
+
+Entry 24
+Student: Kai Maleniza
+Artifact: Cart repo & history repo + those tests
+Label: AI-Assisted
+AI Tool: Gemini
+Purpose: helped confirmed if the cart repo and history repo were implemented properly + helped write tests for the pr
+Validation: Will be peer reviewed for any mistakes
+PR: 143

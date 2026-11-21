@@ -58,5 +58,17 @@
         "Address": "104 Example Lane, Kelowna, BC",
         "passwordHash": "pbkdf2_sha256$310000$fe9453c327d273153f2e6677fb041f32$cae149f62899f0f56369cbb642bc13e7c12daa355236fe61a5d32c438264e3f7",
         "active": true
+    },
+    {
+        "ownerId": 6,
+        "active": true,
+        "firstName": "Tony",
+        "lastName": "Rigatoni",
+        "Address": "123 Spaghetti Avenue",
+        "emailAddress": "tonyrigatoni@gmail.com",
+        "phoneNumber": "250-307-5511",
+        "username": "PastaGalore",
+        "passwordHash": "pbkdf2_sha256$310000$3e6dfe75d481147b41417ff78e5aaee2$379ba989b3f4759b7e346e34b38ff8f672c641dc91e22815c2246cf99a212fe2",
+        "restaurantId": 8
     }
 ]
