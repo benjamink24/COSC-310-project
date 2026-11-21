@@ -133,4 +133,26 @@ def test_expired_owner_session_is_rejected(temporary_account_files):
 
     assert response.status_code == 401
 
+def test_deactivation_requires_authenticated_owner(temporary_account_files):
+    response = client.post("/customer/deactivate")
 
+    assert response.status_code == 401
+
+def test_deactivation(temporary_account_files):
+    customer = temporary_account_files
+    _, session = register_customer("deactiveate-customer")
+    
+    
+    response = client.post("/customer/deactivate",
+            headers={"Authorization": f"Bearer {session['accessToken']}"},
+    )
+    
+    assert response.status_code == 204
+    customers = json.loads(customer.read_text(encoding="utf-8"))
+    customer_record = next(item for item in customers if item["cId"] == session["cId"])
+    
+    assert customer_record["active"] is False
+    
+    
+    
+    
