@@ -92,6 +92,55 @@ def test_owner_profile_requires_valid_session_and_hides_password(temporary_accou
     assert "passwordHash" not in profile
 
 
+def test_owner_can_only_retrieve_the_restaurant_for_their_session(
+    temporary_account_files,
+):
+    _, first_session = register_owner("first-profile-owner", "First Restaurant")
+    _, second_session = register_owner("second-profile-owner", "Second Restaurant")
+
+    first_profile = client.get(
+        "/restaurant-owners/me",
+        headers={"Authorization": f"Bearer {first_session['accessToken']}"},
+    ).json()
+    second_profile = client.get(
+        "/restaurant-owners/me",
+        headers={"Authorization": f"Bearer {second_session['accessToken']}"},
+    ).json()
+
+    assert first_profile["restaurantId"] == first_session["restaurantId"]
+    assert first_profile["restaurant"]["Name"] == "First Restaurant"
+    assert second_profile["restaurantId"] == second_session["restaurantId"]
+    assert second_profile["restaurant"]["Name"] == "Second Restaurant"
+    assert first_profile["restaurantId"] != second_profile["restaurantId"]
+
+
+def test_owner_profile_returns_latest_saved_restaurant_details(
+    temporary_account_files,
+):
+    _, session = register_owner("latest-profile-owner", "Original Restaurant")
+    headers = {"Authorization": f"Bearer {session['accessToken']}"}
+    updated_data = {
+        "Name": "Latest Restaurant Name",
+        "Cuisine": "Updated Cuisine",
+        "Address": "25 New Street",
+        "Hours": "11:00 AM - 9:00 PM",
+        "Photos": ["https://example.com/latest.jpg"],
+        "menu": [{"Name": "New Dish", "Price": 12.5, "Availability": True}],
+    }
+
+    update_response = client.put(
+        f"/restaurants/{session['restaurantId']}",
+        json=updated_data,
+        headers=headers,
+    )
+    assert update_response.status_code == 201
+
+    profile_response = client.get("/restaurant-owners/me", headers=headers)
+
+    assert profile_response.status_code == 200
+    assert profile_response.json()["restaurant"] == updated_data
+
+
 def test_restaurant_update_requires_owning_owner_session(temporary_account_files):
     _, first_session = register_owner("first-owner", "First Restaurant")
     _, second_session = register_owner("second-owner", "Second Restaurant")

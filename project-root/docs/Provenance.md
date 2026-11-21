@@ -69,3 +69,11 @@ Label: AI-Generated
 AI tool: Gemini
 Purpose: To create proper data to work with
 Validation: Code will be previewed by group mates
+
+Student: Manhar Khurana
+Artifact: Tests for retrieving restaurant owner information
+Label: AI-Assisted
+AI tool: Copilot
+Purpose: Added tests for authenticated owners retrieving only their associated restaurant information and seeing the latest saved details.
+Validation: The full test suite passed (90 tests).
+PR: Not assigned
