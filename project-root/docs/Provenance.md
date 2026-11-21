@@ -146,6 +146,7 @@ Purpose: helped confirmed if the cart repo and history repo were implemented pro
 Validation: Will be peer reviewed for any mistakes
 PR: 143
 
+Entry 25
 - Student: Maksym
 - Artifact: project-root\tests\test_bloom.py, project-root\tests\test_cart_service.py, project-root\tests\test_checkout_service.py
 - Label: AI-GENERATED
@@ -154,3 +155,12 @@ PR: 143
 - Influence: the generated tests were added to the test suite to cover bloom filter sizing, lookups, normalization and false-positive rate, plus cart and checkout service behaviour.
 - Validation: the tests were run with pytest and passed, and teammates reviewed them during PR review.
 - PR: <add PR number>
+
+Entry 26
+Student: Kai Maleniza
+Artifact: github tasks
+Label: AI-GENERATED
+AI Tool: Gemini
+Purpose: AI generated tasks for the github tasks
+Validation: Will be peer reviewed for any mistakes
+PR: none
