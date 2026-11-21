@@ -41,7 +41,9 @@ class customerService:
         customerService.accepted_payment_method(update_data.get("paymentMethod"))
         customerService.validate_email(update_data.get("emailAddress"))
         customerService.validate_password(update_data.get("password"))
-        customerService.validate_username(self, update_data.get("username"))
+        if update_data.get("username") != self.repo.get_customers_by_id(cId).get("username"):
+            customerService.validate_username(self, update_data.get("username"))
+            self.bloom_filter.add(update_data.get("username"))
         update_data["password"] = self._hash_password(update_data["password"])
         return self.repo.update_customer(cId, update_data)
 

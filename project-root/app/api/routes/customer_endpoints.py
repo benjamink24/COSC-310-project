@@ -18,7 +18,7 @@ def login_customer(credentials: customer_login_model):
 
 
 # add customer
-@router.post("/", 
+@router.post("/sign-up", 
              response_model=customer_model,
              summary="create a new customer",
              description="Creates a new customer in the json file from the provided data which is vetted by the pydantic model", status_code=201)

@@ -92,7 +92,7 @@ def test_create_and_update_restaurant(temp_data):
         "password": "janeDoe"
 
     }
-    response = client.post("/customer/", json=new_cus)
+    response = client.post("/customer/sign-up", json=new_cus)
     assert response.status_code == 201
     assert response.json()["firstName"] == "Jane"
 
