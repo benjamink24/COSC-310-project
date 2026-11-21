@@ -59,7 +59,13 @@ cd project-root
 | GET | `/restaurants/{restaurant_name}/menu` | Returns restaurant menu |
 | GET | `/restaurants/{restaurant_name}/menu/{menu_item}` | Returns one menu item |
 | GET | `/restaurants/filter/{cuisine_type}` | Returns filtered restaurants by cuisine |
-
+| GET | `/cart/me` | Returns the authenticated customer's cart |
+| POST | `/cart/me/items` | Adds an item to the cart |
+| PUT | `/cart/me/items/{item_name}` | Updates an item in the cart |
+| DELETE | `/cart/me/items/{item_name}` | Removes an item from the cart |
+| DELETE | `/cart/me` | Clears the cart |
+| POST | `/checkout/` | Places an order from the cart |
+| GET | `/checkout/history/me` | Returns the customer's order history |
 
 ### /docs Path
 Interactive Swagger API documentation is available at:
