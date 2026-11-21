@@ -85,3 +85,15 @@ AI tool: Copilot
 Purpose: Added the owner-facing deactivation button and confirmation flow, connected it to the deactivation API, and tested authorization, persistent deactivation, revoked sessions, blocked login, and restaurant availability.
 Validation: The full test suite passed (93 tests), and the frontend JavaScript syntax check passed.
 PR: Not assigned
+Artifact: Adding tests for update management information
+Label: AI-Generated
+AI tool: Gemini
+Purpose: To create tests to make sure everything works well. And everything works
+Validation: Code will be previewed by group mates
+
+Student: Kai Maleniza
+Artifact: m2-sprint md
+Label: AI-Assisted
+AI Tool: Gemini
+Purpose: Assisted help with our M2 sprint md
+Validation: Will be peer reviewed for any mistakes

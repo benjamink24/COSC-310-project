@@ -175,6 +175,53 @@ def test_restaurant_update_requires_owning_owner_session(temporary_account_files
     assert response.status_code == 403
 
 
+def test_owner_update_is_validated_persisted_and_returned(temporary_account_files):
+    _, restaurants_file = temporary_account_files
+    _, session = register_owner("update-owner", "Before Update")
+    restaurant_id = session["restaurantId"]
+    headers = {"Authorization": f"Bearer {session['accessToken']}"}
+    updated_data = {
+        "Name": "Updated Restaurant",
+        "Cuisine": "Updated Cuisine",
+        "Address": "22 Updated Street",
+        "Hours": "10:00 AM - 8:00 PM",
+        "Photos": ["https://example.com/photo.jpg"],
+        "menu": [],
+    }
+
+    update_response = client.put(
+        f"/restaurants/{restaurant_id}",
+        json=updated_data,
+        headers=headers,
+    )
+    assert update_response.status_code == 201
+    persisted_records = json.loads(restaurants_file.read_text(encoding="utf-8"))
+    persisted_record = next(
+        record for record in persisted_records if record["id"] == restaurant_id
+    )
+    assert persisted_record["Name"] == updated_data["Name"]
+    assert persisted_record["Photos"] == updated_data["Photos"]
+    assert persisted_record["ownerId"] == session["ownerId"]
+
+    persisted = client.get(f"/restaurants/{restaurant_id}")
+    assert persisted.status_code == 200
+    assert persisted.json() == {
+        "Name": updated_data["Name"],
+        "Cuisine": updated_data["Cuisine"],
+        "Address": updated_data["Address"],
+        "Hours": updated_data["Hours"],
+    }
+
+    invalid_data = {**updated_data, "Name": "   "}
+    invalid_response = client.put(
+        f"/restaurants/{restaurant_id}",
+        json=invalid_data,
+        headers=headers,
+    )
+    assert invalid_response.status_code == 422
+    assert client.get(f"/restaurants/{restaurant_id}").json()["Name"] == "Updated Restaurant"
+
+
 def test_restaurant_creation_requires_owner_session(temporary_account_files):
     response = client.post(
         "/restaurants",
