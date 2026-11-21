@@ -12,17 +12,43 @@
         "password": "janeDoe",
         "cId": 1
     },
-{
-    "firstName": "Michael",
-    "lastName": "Smith",
-    "Address": "123 Bernard Ave, Kelowna, BC",
-    "emailAddress": "msmith@gmail.com",
-    "paymentMethod": "debit",
-    "phoneNumber": "250 555 9876",
-    "orderHistory": [],
-    "active": true,
-    "username": "MSmith",
-    "password": "michaelSmith",
-    "cId": 2
-}
+    {
+        "firstName": "Michael",
+        "lastName": "Smith",
+        "Address": "123 Bernard Ave, Kelowna, BC",
+        "emailAddress": "msmith@gmail.com",
+        "paymentMethod": "debit",
+        "phoneNumber": "250 555 9876",
+        "orderHistory": [],
+        "active": true,
+        "username": "MSmith",
+        "password": "michaelSmith",
+        "cId": 2
+    },
+    {
+        "firstName": "Casey",
+        "lastName": "Ng",
+        "Address": "10 Ellis Street, Kelowna, BC",
+        "emailAddress": "casey.ng@example.com",
+        "paymentMethod": "credit",
+        "phoneNumber": "250 555 0100",
+        "username": "caseyng",
+        "password": "pbkdf2_sha256$310000$df302ed54733e19e7d93a35ea6d0306b$fd5fdeddd2816d15ccb1a8c619c50858d7f88b9450043ca5c1479ac9ed89c957",
+        "orderHistory": [],
+        "active": true,
+        "cId": 3
+    },
+    {
+        "firstName": "ben",
+        "lastName": "kelly",
+        "Address": "kelowna",
+        "emailAddress": "x@gmail.com",
+        "paymentMethod": "credit",
+        "phoneNumber": "455 444 5555",
+        "username": "johnWilks",
+        "password": "pbkdf2_sha256$310000$481abefce2791965867965f9b7dc82d7$9aa8510e00a600de92886528ca7e150d6f86b0fc5059cdf1a66f02d93c6954e3",
+        "orderHistory": [],
+        "active": false,
+        "cId": 4
+    }
 ]

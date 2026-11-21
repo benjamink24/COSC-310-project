@@ -3,23 +3,85 @@ import { saveSession } from "./session.js";
 
 const loginForm = document.getElementById("login-form");
 const registrationForm = document.getElementById("owner-register-form");
+const customerRegistrationForm = document.getElementById("customer-register-form");
 const status = document.getElementById("login-status");
+
+function showForm(form) {
+    loginForm.hidden = form !== loginForm;
+    registrationForm.hidden = form !== registrationForm;
+    customerRegistrationForm.hidden = form !== customerRegistrationForm;
+    status.textContent = "";
+}
 
 document
     .getElementById("show-registration")
     .addEventListener("click", () => {
-        loginForm.hidden = true;
-        registrationForm.hidden = false;
-        status.textContent = "";
+        showForm(registrationForm);
+    });
+
+document
+    .getElementById("show-customer-registration")
+    .addEventListener("click", () => {
+        showForm(customerRegistrationForm);
     });
 
 document
     .getElementById("show-login")
     .addEventListener("click", () => {
-        registrationForm.hidden = true;
-        loginForm.hidden = false;
-        status.textContent = "";
+        showForm(loginForm);
     });
+
+document
+    .getElementById("show-login-from-customer")
+    .addEventListener("click", () => {
+        showForm(loginForm);
+    });
+
+customerRegistrationForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const form = new FormData(customerRegistrationForm);
+    const submitButton = customerRegistrationForm.querySelector(
+        "button[type='submit']"
+    );
+    const registration = {
+        firstName: form.get("firstName").trim(),
+        lastName: form.get("lastName").trim(),
+        Address: form.get("Address").trim(),
+        emailAddress: form.get("emailAddress").trim(),
+        paymentMethod: form.get("paymentMethod"),
+        phoneNumber: form.get("phoneNumber").trim(),
+        username: form.get("username").trim(),
+        password: form.get("password")
+    };
+    submitButton.disabled = true;
+    status.textContent = "Creating account...";
+
+    try {
+        const response = await fetch(`${API_URL}/customer/sign-up`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(registration)
+        });
+        const result = await response.json();
+        if (!response.ok) {
+            const detail = result.detail;
+            throw new Error(
+                Array.isArray(detail)
+                    ? detail.map(issue => issue.msg).join(", ")
+                    : detail || "Could not create account."
+            );
+        }
+        document.getElementById("username").value = registration.username;
+        customerRegistrationForm.reset();
+        showForm(loginForm);
+        status.textContent = "Account created. Sign in to continue.";
+    } catch (error) {
+        console.error("Customer registration failed:", error);
+        status.textContent = error.message;
+    } finally {
+        submitButton.disabled = false;
+    }
+});
 
 registrationForm.addEventListener("submit", async (event) => {
     event.preventDefault();

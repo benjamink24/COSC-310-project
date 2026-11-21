@@ -1,5 +1,5 @@
 import { apiUrl, errorMessageFromResponse } from "./api.js";
-import { linkedCustomerId } from "./session.js";
+import { authHeaders, linkedCustomerId } from "./session.js";
 
 let activeCustomerId = null;
 
@@ -119,7 +119,9 @@ function renderHistory(orders) {
 }
 
 async function loadCart() {
-    const response = await fetch(apiUrl(`/cart/${activeCustomerId}`));
+    const response = await fetch(apiUrl("/cart/me"), {
+        headers: authHeaders()
+    });
     if (response.status === 404) {
         const message = await errorMessageFromResponse(response);
         if (message.toLowerCase().includes("cart")) {
@@ -137,7 +139,9 @@ async function loadCart() {
 }
 
 async function loadHistory() {
-    const response = await fetch(apiUrl(`/checkout/history/${activeCustomerId}`));
+    const response = await fetch(apiUrl("/checkout/history/me"), {
+        headers: authHeaders()
+    });
     if (!response.ok) {
         throw new Error(await errorMessageFromResponse(response));
     }
@@ -155,10 +159,10 @@ async function updateQuantity(itemName, rawQuantity) {
     cartStatus("Updating quantity...");
     try {
         const response = await fetch(
-            apiUrl(`/cart/${activeCustomerId}/items/${encodeURIComponent(itemName)}`),
+            apiUrl(`/cart/me/items/${encodeURIComponent(itemName)}`),
             {
                 method: "PUT",
-                headers: { "Content-Type": "application/json" },
+                headers: authHeaders({ "Content-Type": "application/json" }),
                 body: JSON.stringify({ quantity })
             }
         );
@@ -178,8 +182,8 @@ async function removeItem(itemName) {
     cartStatus("Removing item...");
     try {
         const response = await fetch(
-            apiUrl(`/cart/${activeCustomerId}/items/${encodeURIComponent(itemName)}`),
-            { method: "DELETE" }
+            apiUrl(`/cart/me/items/${encodeURIComponent(itemName)}`),
+            { method: "DELETE", headers: authHeaders() }
         );
         if (!response.ok) {
             throw new Error(await errorMessageFromResponse(response));
@@ -195,8 +199,9 @@ async function removeItem(itemName) {
 async function clearCart() {
     cartStatus("Clearing cart...");
     try {
-        const response = await fetch(apiUrl(`/cart/${activeCustomerId}`), {
-            method: "DELETE"
+        const response = await fetch(apiUrl("/cart/me"), {
+            method: "DELETE",
+            headers: authHeaders()
         });
         if (response.status === 404) {
             renderCart(null);
@@ -228,7 +233,7 @@ async function placeOrder(event) {
     try {
         const response = await fetch(apiUrl("/checkout/"), {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: authHeaders({ "Content-Type": "application/json" }),
             body: JSON.stringify({
                 cId: activeCustomerId,
                 paymentMethod
@@ -292,9 +297,9 @@ export async function addToCart(restaurantId, itemName) {
 
     cartStatus(`Adding ${itemName}...`);
     try {
-        const response = await fetch(apiUrl(`/cart/${customerId}/items`), {
+        const response = await fetch(apiUrl("/cart/me/items"), {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: authHeaders({ "Content-Type": "application/json" }),
             body: JSON.stringify({
                 restaurantId: Number(restaurantId),
                 Name: itemName,

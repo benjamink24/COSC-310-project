@@ -58,18 +58,25 @@ export function canViewRestaurant(restaurantId) {
 }
 
 export function linkedCustomerId() {
-    const customerId = Number(currentUser && currentUser.customerId);
+    if (!currentUser || currentUser.role !== "customer" || !currentUser.accessToken) {
+        return null;
+    }
+    const customerId = Number(currentUser.cId ?? currentUser.customerId);
     if (!Number.isInteger(customerId) || customerId < 1) {
         return null;
     }
     return customerId;
 }
 
-export function ownerAuthHeaders(headers = {}) {
+export function authHeaders(headers = {}) {
     if (currentUser && currentUser.accessToken) {
         headers.Authorization = `Bearer ${currentUser.accessToken}`;
     }
     return headers;
+}
+
+export function ownerAuthHeaders(headers = {}) {
+    return authHeaders(headers);
 }
 
 export function saveSession(session) {
