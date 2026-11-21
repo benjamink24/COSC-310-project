@@ -25,16 +25,7 @@ def login_customer(credentials: customer_login_model):
 def create_customer(customer_data: add_customer_model):
     return customer.create_customer(customer_data.model_dump())
 
-# @router.get("/",
-#             response_model = list[external_viewer_model],
-#             summary="Lists customers only external inof avalible", # idea for res owners 
-#             description="Returns the name, cuisine, and ID of all restaurants",
-#             responses={404: {"model": error_response_model, "description": "Restaurant not found"}})
-# def list_customers():
-#     customerList = customer.get_customers()
-#     return customerList
 
-#get specific customer
 @router.get("/me",
             response_model = customer_model,
             summary="provides all of a costomers personal info", # idea for res owners 
@@ -67,4 +58,16 @@ def logout_customer(
 ):
     _, _, access_token = authorization.partition(" ")
     customer.revoke_session(access_token.strip())
+    return Response(status_code=204)
+
+
+@router.post(
+    "/deactivate",
+    status_code=204,
+    summary="Deactivate the authenticated customer",
+)
+def deactivate_customer(
+    session: dict = Depends(require_customer_authentication),
+):
+    customer.deactivate_customer(session["cId"])
     return Response(status_code=204)

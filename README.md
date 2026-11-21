@@ -59,13 +59,20 @@ cd project-root
 | GET | `/restaurants/{restaurant_name}/menu` | Returns restaurant menu |
 | GET | `/restaurants/{restaurant_name}/menu/{menu_item}` | Returns one menu item |
 | GET | `/restaurants/filter/{cuisine_type}` | Returns filtered restaurants by cuisine |
-| GET | `/cart/me` | Returns the authenticated customer's cart |
-| POST | `/cart/me/items` | Adds an item to the cart |
-| PUT | `/cart/me/items/{item_name}` | Updates an item in the cart |
-| DELETE | `/cart/me/items/{item_name}` | Removes an item from the cart |
-| DELETE | `/cart/me` | Clears the cart |
-| POST | `/checkout/` | Places an order from the cart |
-| GET | `/checkout/history/me` | Returns the customer's order history |
+| POST | `/customer/sign-up` | Creates a customer account |
+| POST | `/customer/login` | Authenticates a customer and returns a bearer session |
+| GET | `/customer/me` | Returns the authenticated customer's profile |
+| PUT | `/customer/me` | Updates the authenticated customer's profile |
+| POST | `/customer/logout` | Revokes the authenticated customer session |
+| POST | `/customer/deactivate` | Deactivates the authenticated customer account |
+| GET | `/cart/me` | Returns the authenticated customer's cart and total, or 404 when they have no cart |
+| POST | `/cart/me/items` | Adds a menu item to the authenticated customer's cart |
+| PUT | `/cart/me/items/{item_name}` | Sets the quantity of a cart item |
+| DELETE | `/cart/me/items/{item_name}` | Removes one item from the cart |
+| DELETE | `/cart/me` | Deletes the authenticated customer's cart |
+| POST | `/checkout/` | Turns the cart into an order and empties the cart |
+| GET | `/checkout/history/me` | Lists the authenticated customer's past orders, oldest first |
+
 
 ### /docs Path
 Interactive Swagger API documentation is available at:
@@ -76,7 +83,7 @@ http://127.0.0.1:8000/docs
 
 project-root\data\restaurants.json
 Restaurant owner accounts are persisted in `project-root\data\restaurant_owners.json`.
-Owner passwords are stored as salted PBKDF2 hashes. Restaurant updates and menu changes require the bearer token returned by owner login; sessions are held in memory and expire after one hour.
+Owner and customer passwords are stored as salted PBKDF2 hashes. Restaurant updates, menu changes, cart, checkout, and customer profile routes require the bearer token returned by login. Sessions are held in memory and expire after one hour.
 
 ### How to run Tests
 

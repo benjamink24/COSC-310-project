@@ -46,7 +46,7 @@ Entry 14
 - Artifact: Fixing frontend
 - Label: AI-ASSISTED
 - Purpose: Used AI to add classes and ids to html files to add CSS integration.
-
+Enrty 15
 - Student(s): Ben Kelly
 - Artifact: bloom filter for username validation
 - Label: AI-GENERATED
@@ -56,6 +56,7 @@ Entry 14
 - Validation: group mates inspected the generated code upon pr review
 - PR:
 
+Enrty 16
 Student: Manhar Khurana
 Artifact: Adding tests for restuarant owner management
 Label: AI-Generated
@@ -63,6 +64,7 @@ AI tool: Gemini
 Purpose: To create tests to make sure everything works well. And everything works
 Validation: Code will be previewed by group mates
 
+Enrty 17
 Student: Manhar Khurana
 Artifact: Adding artifical data for restuarnt owner and restuarants
 Label: AI-Generated
@@ -70,6 +72,7 @@ AI tool: Gemini
 Purpose: To create proper data to work with
 Validation: Code will be previewed by group mates
 
+Enrty 18
 Student: Manhar Khurana
 Artifact: Tests for retrieving restaurant owner information
 Label: AI-Assisted
@@ -78,6 +81,7 @@ Purpose: Added tests for authenticated owners retrieving only their associated r
 Validation: The full test suite passed (90 tests).
 PR: Not assigned
 
+Enrty 19
 Student: Manhar Khurana
 Artifact: Owner account deactivation frontend and tests (index.html, script.js, test_restaurant_owner_auth.py)
 Label: AI-Assisted
@@ -85,15 +89,78 @@ AI tool: Copilot
 Purpose: Added the owner-facing deactivation button and confirmation flow, connected it to the deactivation API, and tested authorization, persistent deactivation, revoked sessions, blocked login, and restaurant availability.
 Validation: The full test suite passed (93 tests), and the frontend JavaScript syntax check passed.
 PR: Not assigned
+
 Artifact: Adding tests for update management information
 Label: AI-Generated
 AI tool: Gemini
 Purpose: To create tests to make sure everything works well. And everything works
 Validation: Code will be previewed by group mates
 
+Entry 20
 Student: Kai Maleniza
 Artifact: m2-sprint md
 Label: AI-Assisted
 AI Tool: Gemini
 Purpose: Assisted help with our M2 sprint md
 Validation: Will be peer reviewed for any mistakes
+PR: 162
+
+
+Enrty 21
+- Student(s): Ben Kelly
+- Artifact: all files contained in frontend foulder ex: project-root\frontend
+- Label: AI-GENERATED
+- AI tool: grok 4.7/ cursor agent
+- Purpose: to refactor previos front end files to be more maintainable and legible. this was also used to add all front end functionallity to m2
+- Influence: code has become easier to maintain and work on and will continue to be used as a foundation for the front end.
+- Validation: group mates inspected and vetted the front end to ensure m2 criteria were met
+- PR:
+
+Enrty 22
+- Student(s): Ben Kelly
+- Artifact: project-root\app\services\customer_service.py
+- Label: AI-revised
+- AI tool: claude
+- Purpose: to find bugs in instantiation of customer authentication
+- Influence: led to light refactoring most notibly the instantiation of customer service is now sigleton rather.
+- Validation: tests past and group mates inspected upon pull request 
+- PR: 171
+
+entry 16 and 19 tests from those artifact were adapted for use in other artifacts by ben kelly code was refactored to work by hand but the original testing code was ai generated as stated in the above. purpose was to co-op tests for simmilar classes and refactor for those test to work on diffrent cirtira. validation team mate reveiw upon pr 171, 182: artifact test_customer_auth
+
+Entry 23
+Student: Kai Maleniza
+Artifact: cross-subsystem business rules
+Label: AI-Assisted
+AI Tool: Gemini
+Purpose: Assisted help confirming if we needed any of the business rules
+Validation: Will be peer reviewed for any mistakes
+PR: 173
+
+Entry 24
+Student: Kai Maleniza
+Artifact: Cart repo & history repo + those tests
+Label: AI-Assisted
+AI Tool: Gemini
+Purpose: helped confirmed if the cart repo and history repo were implemented properly + helped write tests for the pr
+Validation: Will be peer reviewed for any mistakes
+PR: 143
+
+Entry 25
+- Student: Maksym
+- Artifact: project-root\tests\test_bloom.py, project-root\tests\test_cart_service.py, project-root\tests\test_checkout_service.py
+- Label: AI-GENERATED
+- AI tool: Claude
+- Purpose: to write unit tests for the username bloom filter, the cart service and the checkout service.
+- Influence: the generated tests were added to the test suite to cover bloom filter sizing, lookups, normalization and false-positive rate, plus cart and checkout service behaviour.
+- Validation: the tests were run with pytest and passed, and teammates reviewed them during PR review.
+- PR: <add PR number>
+
+Entry 26
+Student: Kai Maleniza
+Artifact: github tasks
+Label: AI-GENERATED
+AI Tool: Gemini
+Purpose: AI generated tasks for the github tasks
+Validation: Will be peer reviewed for any mistakes
+PR: none

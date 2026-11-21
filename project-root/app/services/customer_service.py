@@ -158,4 +158,24 @@ class customerService:
         if self.bloom_filter.might_exist(username):
             raise HTTPException(status_code=422, detail="Username is already taken")
 
+    def deactivate_customer(self, cId: int) -> None:
+            account = self.repo.get_customers_by_id(cId)
+            if account is None or account.get("active", True) is False:
+                raise HTTPException(status_code=404, detail="Active customer account not found")
+    
+    
+            updated_customer = self.repo.update_customer(cId, {"active": False})
+            if updated_customer is None:
+                raise HTTPException(status_code=404, detail="Owner account not found")
+    
+            with self._sessions_lock:
+                customer_tokens = [
+                    token_key
+                    for token_key, session in self._sessions.items()
+                    if str(session["cId"]) == str(cId)
+                ]
+                for token_key in customer_tokens:
+                    del self._sessions[token_key]
+        
+
 customer_service = customerService()

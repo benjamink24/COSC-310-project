@@ -253,6 +253,62 @@ form button {
     color: var(--muted);
 }
 
+#customer-app section {
+    margin-top: 1.25rem;
+    padding-top: 0.25rem;
+    border-top: 1px solid var(--border);
+}
+
+#customer-app section h3 {
+    margin-bottom: 0.35rem;
+}
+
+.cart-line,
+.menu-item-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.55rem;
+    margin: 0.65rem 0;
+}
+
+.cart-line {
+    padding-bottom: 0.65rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.cart-line .line-name,
+.menu-item-row h5 {
+    flex: 1 1 10rem;
+    margin: 0;
+}
+
+.cart-line input[type="number"] {
+    width: 5rem;
+    min-height: 40px;
+}
+
+.cart-line button,
+.menu-item-row button {
+    width: auto;
+}
+
+#cart-total {
+    font-weight: 700;
+}
+
+.order-card {
+    margin-top: 0.75rem;
+    padding: 0.75rem 0.9rem;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+}
+
+.order-card h4,
+.order-card p {
+    margin: 0.25rem 0;
+}
+
 .auth-notice {
     margin: 1.2rem 0 0;
     padding: 0.9rem 1rem;

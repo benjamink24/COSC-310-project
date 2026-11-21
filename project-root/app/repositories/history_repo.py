@@ -3,7 +3,7 @@ from pathlib import Path
 import os
 from .repository import AbstractRepository
 
-class histRepo:
+class histRepo(AbstractRepository):
     def __init__(self, file_path: str | None = None):
         if file_path is None:
             file_path = "./data/history.json"
@@ -25,7 +25,13 @@ class histRepo:
     def add_order(self, order_dict: dict) -> dict:
         """Saves an order and gives it the next orderId (1 for the first order)."""
         orders = self.get_all_orders()
-        ids = [int(o["orderId"]) for o in orders if "orderId" in o]
+        ids = []
+        for o in orders:
+            if "orderId" in o:
+                try:
+                    ids.append(int(o["orderId"]))
+                except (TypeError, ValueError):
+                    pass
         order = {**order_dict, "orderId": max(ids) + 1 if ids else 1}
         orders.append(order)
         self.save_all({"orders": orders})
@@ -51,9 +57,10 @@ class histRepo:
         return None
 
     def get_by_field(self, field: str, value: str) -> list:
+        target = str(value).strip().lower()
         return [
             o for o in self.get_all_orders()
-            if str(o.get(field, "")).strip().lower() == str(value).strip().lower()
+            if str(o.get(field, "")).strip().lower() == target
         ]
     
     def update(self, identifier, update_data: dict) -> dict | None:

@@ -15,8 +15,16 @@ class checkoutService:
         self.res_repo = res_repo if res_repo is not None else resRepo()
 
     def _require_customer(self, cId: int) -> None:
-        if self.customer_repo.get_customers_by_id(cId) is None:
+        customer = self.customer_repo.get_customers_by_id(cId) 
+        if customer is None:
             raise HTTPException(status_code=404, detail="customer not found")
+        return customer
+
+    def _required_active_customer(self, cId: int) -> None:
+        customer = self._require_customer(cId)
+        if customer.get("active") is False:
+            raise HTTPException(status_code=403, detail="Account is inactive")
+        return customer
         
     def checkout(self, cId: int, paymentMethod: str) -> dict:
         """Turns the customer's cart into a saved order and empties the cart
@@ -24,7 +32,7 @@ class checkoutService:
         line is checked against the menu so a sold out or removed item
         blocks the checkout and price is updated"""
 
-        self._require_customer(cId)
+        self._required_active_customer(cId)
 
         cart = self.cart_repo.get_cart_by_cid(cId)
         if not cart or not cart.get("items"):
@@ -61,9 +69,12 @@ class checkoutService:
 
         # ORDER MATTERS: save the order first, clear the cart second
         saved = self.history_repo.add_order(order)
+        if not saved:
+            raise HTTPException(status_code=500,detail ="failed to persist order")
+
         self.cart_repo.clear_cart(cId)
         return saved
 
     def get_order_history(self, cId: int) -> list:
-        self._require_customer(cId)
+        self._required_active_customer(cId)
         return self.history_repo.get_orders_by_cid(cId)
