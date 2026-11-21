@@ -24,20 +24,33 @@ class cartService:
         self.res_repo = res_repo if res_repo is not None else resRepo()
         self.customer_repo = customer_repo if customer_repo is not None else customerRepo()
 
+    def _validate_quantity(self, quantity: int) -> None:
+        if isinstance(quantity, bool) or not isinstance(quantity, int) or quantity <= 0:
+            raise HTTPException(status_code=422, detail="quantity must be a positive integer")
+
     def _require_customer(self, cId: int) -> None:
-        if self.customer_repo.get_customers_by_id(cId) is None:
+        customer = self.customer_repo.get_customers_by_id(cId) 
+        if customer is None:
             raise HTTPException(status_code=404, detail="customer not found")
+        return customer
+
+    def _require_active_customer(self, cId: int) -> None:
+        customer = self._require_customer(cId)
+        if customer.get("active") is False:
+            raise HTTPException(status_code=403, detail="Account is inactive")
+        return customer
 
     def get_cart(self, cId: int) -> dict | None:
         """The customer cart with its total or None if they have no cart"""
-        self._require_customer(cId)
+        self._require_active_customer(cId)
         cart = self.cart_repo.get_cart_by_cid(cId)
         if cart is None:
             return None
         return _with_total(cart)
 
     def add_item(self, cId: int, restaurantId: int, Name: str, quantity: int) -> dict:
-        self._require_customer(cId)
+        self._validate_quantity(quantity)
+        self._require_active_customer(cId)
         if self.res_repo.get_restaurants_by_id(restaurantId) is None:
             raise HTTPException(status_code=404, detail="restaurant not found")
         menu_item = self.res_repo.get_menu_items(restaurantId, Name)
@@ -68,6 +81,8 @@ class cartService:
 
     def update_item(self, cId: int, Name: str, quantity: int) -> dict:
         """SETS a line's quantity (add_item, by contrast, adds to it)."""
+        self._validate_quantity(quantity)
+        self._require_active_customer(cId)
         cart = self.cart_repo.get_cart_by_cid(cId)
         if cart is None:
             raise HTTPException(status_code=404, detail="cart not found")
@@ -80,6 +95,7 @@ class cartService:
 
     def remove_item(self, cId: int, Name: str) -> dict:
         """ Removes a line leaves an empty cart behind (clear_cart to delete cart)."""
+        self._require_active_customer(cId)
         cart = self.cart_repo.get_cart_by_cid(cId)
         if cart is None:
             raise HTTPException(status_code=404, detail="cart not found")
@@ -92,4 +108,5 @@ class cartService:
 
     def clear_cart(self, cId: int) -> bool:
         """Deletes the whole cart goes False if there was nothing to delete"""
+        self._require_active_customer(cId)
         return self.cart_repo.clear_cart(cId)
