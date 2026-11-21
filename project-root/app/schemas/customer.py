@@ -49,7 +49,7 @@ class update_customer_model(BaseModel):
     phoneNumber: str = Field(min_length=1, max_length=100)
     username: str = Field(min_length=1, max_length=100)
     password: str = Field(min_length=1, max_length=100)
-    active: bool
+
     
 
 

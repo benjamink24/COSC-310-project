@@ -68,3 +68,15 @@ def logout_customer(
     _, _, access_token = authorization.partition(" ")
     customer.revoke_session(access_token.strip())
     return Response(status_code=204)
+
+
+@router.post(
+    "/deactivate",
+    status_code=204,
+    summary="Deactivate the authenticated customer",
+)
+def deactivate_customer(
+    session: dict = Depends(require_customer_authentication),
+):
+    customer.deactivate_customer(session["cId"])
+    return Response(status_code=204)
