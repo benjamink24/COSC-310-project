@@ -69,3 +69,10 @@ Label: AI-Generated
 AI tool: Gemini
 Purpose: To create proper data to work with
 Validation: Code will be previewed by group mates
+
+Student: Kai Maleniza
+Artifact: m2-sprint md
+Label: AI-Assisted
+AI Tool: Gemini
+Purpose: Assisted help with our M2 sprint md
+Validation: Will be peer reviewed for any mistakes
