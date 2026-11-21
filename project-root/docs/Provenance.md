@@ -70,6 +70,13 @@ AI tool: Gemini
 Purpose: To create proper data to work with
 Validation: Code will be previewed by group mates
 
+Student: Manhar Khurana
+Artifact: Adding tests for update management information
+Label: AI-Generated
+AI tool: Gemini
+Purpose: To create tests to make sure everything works well. And everything works
+Validation: Code will be previewed by group mates
+
 Student: Kai Maleniza
 Artifact: m2-sprint md
 Label: AI-Assisted

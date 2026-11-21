@@ -582,30 +582,27 @@ async function loadSelectedRestaurant() {
     }
 
     try {
-        const [detailsResponse, menuResponse] = await Promise.all([
-            fetch(`${API_URL}/restaurants/${encodeURIComponent(restaurantId)}`),
-            fetch(`${API_URL}/restaurants/${encodeURIComponent(restaurantId)}/menu`)
-        ]);
+        const profileResponse = await fetch(
+            `${API_URL}/restaurant-owners/me`,
+            { headers: ownerAuthHeaders() }
+        );
 
-        if (!detailsResponse.ok) {
-            throw new Error(`Restaurant request failed: HTTP ${detailsResponse.status}`);
+        if (!profileResponse.ok) {
+            throw new Error(`Owner profile request failed: HTTP ${profileResponse.status}`);
         }
 
-        if (!menuResponse.ok) {
-            throw new Error(`Menu request failed: HTTP ${menuResponse.status}`);
+        const profile = await profileResponse.json();
+        if (String(profile.restaurantId) !== String(restaurantId)) {
+            throw new Error("The signed-in owner is not assigned to this restaurant.");
         }
-
-        const restaurant = await detailsResponse.json();
-        const menu = await menuResponse.json();
-        if (!Array.isArray(menu)) {
-            throw new Error("The menu API did not return a list.");
+        const restaurant = profile.restaurant;
+        if (!Array.isArray(restaurant.menu) || !Array.isArray(restaurant.Photos)) {
+            throw new Error("The owner profile did not include complete restaurant data.");
         }
 
         selectedRestaurant = {
             ...restaurant,
-            id: Number(restaurantId),
-            Photos: [],
-            menu
+            id: Number(restaurantId)
         };
 
         document.getElementById("name").value =
