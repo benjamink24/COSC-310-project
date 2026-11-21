@@ -27,6 +27,16 @@ class restaurantOwnerRepo:
             None,
         )
 
+    def get_by_id(self, owner_id: int) -> dict | None:
+        return next(
+            (
+                owner
+                for owner in self.get_all()
+                if str(owner.get("ownerId")) == str(owner_id)
+            ),
+            None,
+        )
+
     def username_or_email_exists(self, username: str, email: str) -> bool:
         normalized_username = username.strip().casefold()
         normalized_email = email.strip().casefold()
@@ -44,6 +54,15 @@ class restaurantOwnerRepo:
         owners.append(owner_data)
         self.save_all(owners)
         return owner_data
+
+    def update_owner(self, owner_id: int, update_data: dict) -> dict | None:
+        owners = self.get_all()
+        for owner in owners:
+            if str(owner.get("ownerId")) == str(owner_id):
+                owner.update(update_data)
+                self.save_all(owners)
+                return owner
+        return None
 
     def save_all(self, owners: list[dict]) -> None:
         self.file_path.parent.mkdir(parents=True, exist_ok=True)

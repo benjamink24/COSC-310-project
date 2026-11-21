@@ -70,6 +70,8 @@ if (!currentUser) {
         admin: "Admin account"
     };
     document.getElementById("account-role").textContent = roleLabels[currentUser.role];
+    document.getElementById("deactivate-account-button").hidden =
+        currentUser.role !== "restaurant";
     document.getElementById("restaurant-app").hidden = false;
     document.getElementById("customer-app").hidden =
         currentUser.role !== "customer";
@@ -97,6 +99,38 @@ document.getElementById("logout-button").addEventListener("click", () => {
         .catch(error => console.error("Could not end server session:", error))
         .finally(finishLogout);
 });
+
+document
+    .getElementById("deactivate-account-button")
+    .addEventListener("click", async event => {
+        if (!isRestaurantUser() || !currentUser.accessToken) {
+            return;
+        }
+        if (!window.confirm(
+            "Deactivate your account and take your restaurant out of the application? This cannot be undone."
+        )) {
+            return;
+        }
+
+        const button = event.currentTarget;
+        button.disabled = true;
+        try {
+            const response = await fetch(`${API_URL}/restaurant-owners/deactivate`, {
+                method: "POST",
+                headers: ownerAuthHeaders()
+            });
+            if (!response.ok) {
+                const detail = await response.text();
+                throw new Error(`HTTP ${response.status}: ${detail}`);
+            }
+            sessionStorage.removeItem(SESSION_KEY);
+            window.location.replace("login.html");
+        } catch (error) {
+            console.error("Could not deactivate account:", error);
+            window.alert(`Could not deactivate account: ${error.message}`);
+            button.disabled = false;
+        }
+    });
 
 function ownerAuthHeaders(headers = {}) {
     if (currentUser && currentUser.accessToken) {

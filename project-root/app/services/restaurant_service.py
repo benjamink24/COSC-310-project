@@ -6,7 +6,11 @@ class resService:
         self.repo = repo
 
     def get_restaurants(self) -> list:
-        return self.repo.get_all_restaurants()
+        return [
+            restaurant
+            for restaurant in self.repo.get_all_restaurants()
+            if restaurant.get("active", True) is not False
+        ]
 
     def get_restaurants_by_name(self, restaurant_name: str) -> list:
         return self.repo.get_restaurants_by_name(restaurant_name)
@@ -19,7 +23,11 @@ class resService:
         return self.repo.get_menu_items(restaurant_id,menu_item)
 
     def get_restaurants_by_cuisine_type(self, cuisine_type: str) -> list:
-        return self.repo.get_restaurants_by_cuisine_type(cuisine_type)
+        return [
+            restaurant
+            for restaurant in self.repo.get_restaurants_by_cuisine_type(cuisine_type)
+            if restaurant.get("active", True) is not False
+        ]
 
    
    

@@ -71,6 +71,20 @@ Purpose: To create proper data to work with
 Validation: Code will be previewed by group mates
 
 Student: Manhar Khurana
+Artifact: Tests for retrieving restaurant owner information
+Label: AI-Assisted
+AI tool: Copilot
+Purpose: Added tests for authenticated owners retrieving only their associated restaurant information and seeing the latest saved details.
+Validation: The full test suite passed (90 tests).
+PR: Not assigned
+
+Student: Manhar Khurana
+Artifact: Owner account deactivation frontend and tests (index.html, script.js, test_restaurant_owner_auth.py)
+Label: AI-Assisted
+AI tool: Copilot
+Purpose: Added the owner-facing deactivation button and confirmation flow, connected it to the deactivation API, and tested authorization, persistent deactivation, revoked sessions, blocked login, and restaurant availability.
+Validation: The full test suite passed (93 tests), and the frontend JavaScript syntax check passed.
+PR: Not assigned
 Artifact: Adding tests for update management information
 Label: AI-Generated
 AI tool: Gemini

@@ -48,6 +48,7 @@ cd project-root
 | POST | `/restaurant-owners/login` | Authenticates an owner and returns a one-hour bearer session |
 | GET | `/restaurant-owners/me` | Returns the authenticated owner and associated restaurant |
 | POST | `/restaurant-owners/logout` | Revokes the authenticated owner session |
+| POST | `/restaurant-owners/deactivate` | Deactivates the authenticated owner and removes their restaurant from normal use |
 | GET | `/restaurants` | Returns available restaurants |
 | GET | `/docs` | Returns documentation |
 | POST | `/restaurants` | Returns a new created restaurant |
