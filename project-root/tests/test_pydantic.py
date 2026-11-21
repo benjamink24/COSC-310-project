@@ -37,11 +37,13 @@ def test_customer_model_validity():
         "orderHistory": [],
         "active": True,
         "cId": 1
-    }
+        }
     model = customer_model(**valid_data)
     assert model.firstName == "Jane"
     assert model.active == True
     assert model.cId == 1
+
+
 
 def test_cart_model_validity():
     valid_data = {

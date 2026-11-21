@@ -40,6 +40,7 @@ class restaurantOwnerService:
 
         owner = {
             "ownerId": owner_id,
+            "active": True,
             "firstName": owner_data["firstName"].strip(),
             "lastName": owner_data["lastName"].strip(),
             "Address": owner_data["Address"].strip(),
@@ -59,8 +60,12 @@ class restaurantOwnerService:
 
     def authenticate_owner(self, username: str, password: str) -> dict | None:
         owner = self.repo.get_by_username(username)
-        if owner is None or not self._verify_password(
+        if (
+            owner is None
+            or owner.get("active", True) is False
+            or not self._verify_password(
             password, owner.get("passwordHash", "")
+            )
         ):
             return None
         access_token = secrets.token_urlsafe(32)
@@ -90,11 +95,45 @@ class restaurantOwnerService:
             session = self._sessions.get(token_key)
             if session is None:
                 return None
+            owner = self.repo.get_by_id(session["ownerId"])
+            if owner is None or owner.get("active", True) is False:
+                del self._sessions[token_key]
+                return None
             return {key: value for key, value in session.items() if key != "expiresAt"}
 
     def revoke_session(self, access_token: str) -> None:
         with self._sessions_lock:
             self._sessions.pop(self._token_key(access_token), None)
+
+    def deactivate_owner(self, owner_id: int) -> None:
+        account = self.repo.get_by_id(owner_id)
+        if account is None or account.get("active", True) is False:
+            raise HTTPException(status_code=404, detail="Active owner account not found")
+
+        restaurant = self.restaurant_repo.get_restaurants_by_id(
+            account["restaurantId"],
+            include_inactive=True,
+        )
+        if restaurant is None:
+            raise HTTPException(status_code=404, detail="Restaurant not found")
+
+        updated_owner = self.repo.update_owner(owner_id, {"active": False})
+        if updated_owner is None:
+            raise HTTPException(status_code=404, detail="Owner account not found")
+        updated_restaurant = self.restaurant_repo.update_res(
+            account["restaurantId"], {"active": False}
+        )
+        if updated_restaurant is None:
+            raise HTTPException(status_code=404, detail="Restaurant not found")
+
+        with self._sessions_lock:
+            owner_tokens = [
+                token_key
+                for token_key, session in self._sessions.items()
+                if str(session["ownerId"]) == str(owner_id)
+            ]
+            for token_key in owner_tokens:
+                del self._sessions[token_key]
 
     def get_owner_profile(self, owner_id: int) -> dict | None:
         account = next(

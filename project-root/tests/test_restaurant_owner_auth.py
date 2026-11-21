@@ -92,6 +92,55 @@ def test_owner_profile_requires_valid_session_and_hides_password(temporary_accou
     assert "passwordHash" not in profile
 
 
+def test_owner_can_only_retrieve_the_restaurant_for_their_session(
+    temporary_account_files,
+):
+    _, first_session = register_owner("first-profile-owner", "First Restaurant")
+    _, second_session = register_owner("second-profile-owner", "Second Restaurant")
+
+    first_profile = client.get(
+        "/restaurant-owners/me",
+        headers={"Authorization": f"Bearer {first_session['accessToken']}"},
+    ).json()
+    second_profile = client.get(
+        "/restaurant-owners/me",
+        headers={"Authorization": f"Bearer {second_session['accessToken']}"},
+    ).json()
+
+    assert first_profile["restaurantId"] == first_session["restaurantId"]
+    assert first_profile["restaurant"]["Name"] == "First Restaurant"
+    assert second_profile["restaurantId"] == second_session["restaurantId"]
+    assert second_profile["restaurant"]["Name"] == "Second Restaurant"
+    assert first_profile["restaurantId"] != second_profile["restaurantId"]
+
+
+def test_owner_profile_returns_latest_saved_restaurant_details(
+    temporary_account_files,
+):
+    _, session = register_owner("latest-profile-owner", "Original Restaurant")
+    headers = {"Authorization": f"Bearer {session['accessToken']}"}
+    updated_data = {
+        "Name": "Latest Restaurant Name",
+        "Cuisine": "Updated Cuisine",
+        "Address": "25 New Street",
+        "Hours": "11:00 AM - 9:00 PM",
+        "Photos": ["https://example.com/latest.jpg"],
+        "menu": [{"Name": "New Dish", "Price": 12.5, "Availability": True}],
+    }
+
+    update_response = client.put(
+        f"/restaurants/{session['restaurantId']}",
+        json=updated_data,
+        headers=headers,
+    )
+    assert update_response.status_code == 201
+
+    profile_response = client.get("/restaurant-owners/me", headers=headers)
+
+    assert profile_response.status_code == 200
+    assert profile_response.json()["restaurant"] == updated_data
+
+
 def test_restaurant_update_requires_owning_owner_session(temporary_account_files):
     _, first_session = register_owner("first-owner", "First Restaurant")
     _, second_session = register_owner("second-owner", "Second Restaurant")
@@ -124,6 +173,53 @@ def test_restaurant_update_requires_owning_owner_session(temporary_account_files
         headers={"Authorization": f"Bearer {second_session['accessToken']}"},
     )
     assert response.status_code == 403
+
+
+def test_owner_update_is_validated_persisted_and_returned(temporary_account_files):
+    _, restaurants_file = temporary_account_files
+    _, session = register_owner("update-owner", "Before Update")
+    restaurant_id = session["restaurantId"]
+    headers = {"Authorization": f"Bearer {session['accessToken']}"}
+    updated_data = {
+        "Name": "Updated Restaurant",
+        "Cuisine": "Updated Cuisine",
+        "Address": "22 Updated Street",
+        "Hours": "10:00 AM - 8:00 PM",
+        "Photos": ["https://example.com/photo.jpg"],
+        "menu": [],
+    }
+
+    update_response = client.put(
+        f"/restaurants/{restaurant_id}",
+        json=updated_data,
+        headers=headers,
+    )
+    assert update_response.status_code == 201
+    persisted_records = json.loads(restaurants_file.read_text(encoding="utf-8"))
+    persisted_record = next(
+        record for record in persisted_records if record["id"] == restaurant_id
+    )
+    assert persisted_record["Name"] == updated_data["Name"]
+    assert persisted_record["Photos"] == updated_data["Photos"]
+    assert persisted_record["ownerId"] == session["ownerId"]
+
+    persisted = client.get(f"/restaurants/{restaurant_id}")
+    assert persisted.status_code == 200
+    assert persisted.json() == {
+        "Name": updated_data["Name"],
+        "Cuisine": updated_data["Cuisine"],
+        "Address": updated_data["Address"],
+        "Hours": updated_data["Hours"],
+    }
+
+    invalid_data = {**updated_data, "Name": "   "}
+    invalid_response = client.put(
+        f"/restaurants/{restaurant_id}",
+        json=invalid_data,
+        headers=headers,
+    )
+    assert invalid_response.status_code == 422
+    assert client.get(f"/restaurants/{restaurant_id}").json()["Name"] == "Updated Restaurant"
 
 
 def test_restaurant_creation_requires_owner_session(temporary_account_files):
@@ -185,3 +281,47 @@ def test_expired_owner_session_is_rejected(temporary_account_files):
     )
 
     assert response.status_code == 401
+
+
+def test_deactivation_requires_authenticated_owner(temporary_account_files):
+    response = client.post("/restaurant-owners/deactivate")
+
+    assert response.status_code == 401
+
+
+def test_deactivation_disables_owner_and_restaurant_persistently(
+    temporary_account_files,
+):
+    owners_file, restaurants_file = temporary_account_files
+    _, session = register_owner("deactivate-owner", "Restaurant to Deactivate")
+    headers = {"Authorization": f"Bearer {session['accessToken']}"}
+    restaurant_id = session["restaurantId"]
+
+    response = client.post("/restaurant-owners/deactivate", headers=headers)
+
+    assert response.status_code == 204
+    owners = json.loads(owners_file.read_text(encoding="utf-8"))
+    restaurants = json.loads(restaurants_file.read_text(encoding="utf-8"))
+    owner_record = next(item for item in owners if item["ownerId"] == session["ownerId"])
+    restaurant_record = next(
+        item for item in restaurants if item["id"] == restaurant_id
+    )
+    assert owner_record["active"] is False
+    assert restaurant_record["active"] is False
+
+    assert client.post(
+        "/restaurant-owners/login",
+        json={"username": session["username"], "password": "StrongPass123"},
+    ).status_code == 401
+    assert client.get("/restaurant-owners/me", headers=headers).status_code == 401
+    assert client.get("/restaurants/").json() == []
+    assert client.get(f"/restaurants/{restaurant_id}").status_code == 404
+    assert client.get(f"/restaurants/{restaurant_id}/menu").status_code == 404
+
+
+def test_deactivated_account_cannot_deactivate_again(temporary_account_files):
+    _, session = register_owner("deactivate-twice-owner", "Deactivated Restaurant")
+    headers = {"Authorization": f"Bearer {session['accessToken']}"}
+
+    assert client.post("/restaurant-owners/deactivate", headers=headers).status_code == 204
+    assert client.post("/restaurant-owners/deactivate", headers=headers).status_code == 401

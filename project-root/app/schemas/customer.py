@@ -13,7 +13,10 @@ class customer_login_model(BaseModel):
 class customer_login_response_model(BaseModel):
     username: str
     role: str
-    customerId: int
+    cId: int
+    accessToken: str
+    tokenType: str
+    expiresIn: int
 
 
 class customer_model(BaseModel):
@@ -44,7 +47,9 @@ class update_customer_model(BaseModel):
     emailAddress: str = Field(min_length=1, max_length=100)
     paymentMethod: str = Field(min_length=1, max_length=100)
     phoneNumber: str = Field(min_length=1, max_length=100)
-    active: bool
+    username: str = Field(min_length=1, max_length=100)
+    password: str = Field(min_length=1, max_length=100)
+
     
 
 

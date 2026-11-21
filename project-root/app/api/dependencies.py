@@ -1,6 +1,7 @@
 from fastapi import Header, HTTPException
 
 from app.services.restaurant_owner_service import owner_service
+from app.services.customer_service import customer_service
 
 
 def require_restaurant_owner(
@@ -22,6 +23,34 @@ def require_restaurant_owner(
         )
 
     session = owner_service.get_session(access_token.strip())
+    if session is None:
+        raise HTTPException(
+            status_code=401,
+            detail="Session is invalid or expired",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    return session
+
+
+def require_customer_authentication(
+    authorization: str | None = Header(default=None),
+) -> dict:
+    if authorization is None:
+        raise HTTPException(
+            status_code=401,
+            detail="customer authentication required",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    scheme, separator, access_token = authorization.partition(" ")
+    if scheme.casefold() != "bearer" or not separator or not access_token.strip():
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid authentication credentials",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    session = customer_service.get_session(access_token.strip())
     if session is None:
         raise HTTPException(
             status_code=401,
