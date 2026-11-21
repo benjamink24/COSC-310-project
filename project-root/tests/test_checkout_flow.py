@@ -7,8 +7,13 @@ from fastapi.testclient import TestClient
 
 from app.main import app
 from app.api.routes import cart_endpoints, checkout_endpoints, customer_endpoints
+from app.services.customer_service import customerService
 
 client = TestClient(app)
+
+PASSWORD = "Password1"
+# customers are stored with hashed passwords; hash once per file because it is slow on purpose
+HASHED_PASSWORD = customerService._hash_password(PASSWORD)
 
 def _customer(cId, firstName):
     return {
@@ -21,12 +26,27 @@ def _customer(cId, firstName):
         "phoneNumber": "250 555 4567",
         "orderHistory": [],
         "active": True,
+        "username": firstName,
+        "password": HASHED_PASSWORD,
     }
 
 CUSTOMER_SEED = [
     _customer(1, "Jane"),
     _customer(3, "Sam"),
 ]
+
+USERNAME = {c["cId"]: c["username"] for c in CUSTOMER_SEED}
+_tokens = {}
+
+def login(cId):
+    """Log in through the real /customer/login endpoint and return the Authorization
+    header. The token is reused for the rest of the file, because hashing makes
+    every login take a moment."""
+    if cId not in _tokens:
+        response = client.post("/customer/login", json={"username": USERNAME[cId], "password": PASSWORD})
+        assert response.status_code == 200, response.text
+        _tokens[cId] = response.json()["accessToken"]
+    return {"Authorization": f"Bearer {_tokens[cId]}"}
 
 RESTAURANT_SEED = [
     {
@@ -86,12 +106,19 @@ def data_files(tmp_path, monkeypatch):
 
 def add_to_cart(client, cId=1, restaurantId=1, Name="Grilled Salmon", quantity=2):
     return client.post(
-        f"/cart/{cId}/items",
+        "/cart/me/items",
         json={"restaurantId": restaurantId, "Name": Name, "quantity": quantity},
+        headers=login(cId),
     )
 
 def checkout(client, cId=1, paymentMethod="credit"):
-    return client.post("/checkout/", json={"cId": cId, "paymentMethod": paymentMethod})
+    # cId stays in the body because checkout_request_model still requires it,
+    # but the order is placed for the customer in the token
+    return client.post(
+        "/checkout/",
+        json={"cId": cId, "paymentMethod": paymentMethod},
+        headers=login(cId),
+    )
 
 def read(path):
     return json.loads(path.read_text())
@@ -104,7 +131,7 @@ def edit_restaurants(path, change): # helper to edit the restaurants.json file i
 def test_full_flow_cart_to_checkout_to_history():
     add_to_cart(client, Name="Grilled Salmon", quantity=2)
     add_to_cart(client, Name="Beef Tenderloin", quantity=1)
-    assert client.get("/cart/1").json()["total"] == 106.0
+    assert client.get("/cart/me", headers=login(1)).json()["total"] == 106.0
     response = checkout(client)
     assert response.status_code == 201
     order = response.json()
@@ -114,21 +141,21 @@ def test_full_flow_cart_to_checkout_to_history():
     assert order["total"] == 106.0
     assert order["status"] == "placed"
     assert len(order["items"]) == 2
-    assert client.get("/cart/1").status_code == 404   # cart was cleared
-    history = client.get("/checkout/history/1")
+    assert client.get("/cart/me", headers=login(1)).status_code == 404   # cart was cleared
+    history = client.get("/checkout/history/me", headers=login(1))
     assert history.status_code == 200
     assert history.json() == [order]
 
 def test_second_order_gets_the_next_id():
     #   historyRepo.add_order sets orderId = last orderId + 1 Both orders then
-    #   appear oldest first in GET /checkout/history/1
+    #   appear oldest first in GET /checkout/history/me
     add_to_cart(client)
     first = checkout(client).json()
     add_to_cart(client, Name="Beef Tenderloin", quantity=1)
     second = checkout(client).json()
 
     assert (first["orderId"], second["orderId"]) == (1, 2)
-    assert len(client.get("/checkout/history/1").json()) == 2
+    assert len(client.get("/checkout/history/me", headers=login(1)).json()) == 2
 
 def test_can_order_from_another_restaurant_after_checkout():
     add_to_cart(client, restaurantId=1)
@@ -143,13 +170,13 @@ def test_customers_have_separate_carts_and_histories():
     add_to_cart(client, cId=3, restaurantId=2, Name="French Toast", quantity=2)
 
     checkout(client, cId=1)
-    assert client.get("/cart/3").status_code == 200       # Sam's cart untouched
-    assert client.get("/checkout/history/3").json() == []
+    assert client.get("/cart/me", headers=login(3)).status_code == 200       # Sam's cart untouched
+    assert client.get("/checkout/history/me", headers=login(3)).json() == []
 
     checkout(client, cId=3)
-    assert client.get("/checkout/history/1").json()[0]["total"] == 32.0
-    assert client.get("/checkout/history/3").json()[0]["total"] == 32.0
-    assert client.get("/checkout/history/3").json()[0]["restaurantId"] == 2
+    assert client.get("/checkout/history/me", headers=login(1)).json()[0]["total"] == 32.0
+    assert client.get("/checkout/history/me", headers=login(3)).json()[0]["total"] == 32.0
+    assert client.get("/checkout/history/me", headers=login(3)).json()[0]["restaurantId"] == 2
 
 # ---------- refused checkouts must change nothing ----------
 def test_checkout_with_no_cart_returns_400_and_writes_nothing(data_files):
@@ -161,9 +188,9 @@ def test_checkout_with_no_cart_returns_400_and_writes_nothing(data_files):
 def test_checkout_invalid_body_returns_422():
     #   checkout_request_model requires cId and a non empty
     #   paymentMethod and FastAPI returns 422 when they are missing or empty
-    assert client.post("/checkout/", json={"cId": 1}).status_code == 422
-    assert client.post("/checkout/", json={"paymentMethod": "credit"}).status_code == 422
-    assert client.post("/checkout/", json={"cId": 1, "paymentMethod": ""}).status_code == 422
+    assert client.post("/checkout/", json={"cId": 1}, headers=login(1)).status_code == 422
+    assert client.post("/checkout/", json={"paymentMethod": "credit"}, headers=login(1)).status_code == 422
+    assert client.post("/checkout/", json={"cId": 1, "paymentMethod": ""}, headers=login(1)).status_code == 422
 
 def test_price_change_after_adding_is_applied_at_checkout(data_files):
     #   The test changes Grilled Salmon from 32.0 to 35.0 after it was added
@@ -181,9 +208,23 @@ def test_price_change_after_adding_is_applied_at_checkout(data_files):
 
 # ---------- history endpoint ----------
 def test_history_for_customer_with_no_orders_is_an_empty_list():
-    response = client.get("/checkout/history/1")
+    response = client.get("/checkout/history/me", headers=login(1))
     assert response.status_code == 200
     assert response.json() == []
 
-def test_history_for_unknown_customer_returns_404():
-    assert client.get("/checkout/history/99").status_code == 404
+def test_history_for_unknown_customer_returns_404(data_files):
+    headers = login(1)
+    data_files["customers"].write_text("[]")   # the account no longer exists
+    assert client.get("/checkout/history/me", headers=headers).status_code == 404
+
+# ---------- authentication ----------
+def test_checkout_requires_login():
+    response = client.post("/checkout/", json={"cId": 1, "paymentMethod": "credit"})
+    assert response.status_code == 401
+
+def test_history_requires_login():
+    assert client.get("/checkout/history/me").status_code == 401
+
+def test_history_rejects_unknown_token():
+    response = client.get("/checkout/history/me", headers={"Authorization": "Bearer not-a-real-token"})
+    assert response.status_code == 401

@@ -47,7 +47,7 @@ def test_valid_payment_method():
             "password": "janeDoe"
     
         }
-    response = client.post("/customer/", json=new_cus)
+    response = client.post("/customer/sign-up", json=new_cus)
     assert response.status_code == 422
     new_cus = {
                 "firstName": "Jane",
@@ -60,7 +60,7 @@ def test_valid_payment_method():
                 "password": "janeDoe"
         
             }
-    response = client.post("/customer/", json=new_cus)
+    response = client.post("/customer/sign-up", json=new_cus)
     assert response.status_code == 201
 
 def test_validate_email():
@@ -75,7 +75,7 @@ def test_validate_email():
             "password": "janeDoe"
     
         }
-    response = client.post("/customer/", json=new_cus)
+    response = client.post("/customer/sign-up", json=new_cus)
     assert response.status_code == 422
     new_cus = {
                 "firstName": "Jane",
@@ -88,7 +88,7 @@ def test_validate_email():
                 "password": "janeDoe"
         
             }
-    response = client.post("/customer/", json=new_cus)
+    response = client.post("/customer/sign-up", json=new_cus)
     assert response.status_code == 201
 
 def test_validate_password():
@@ -103,7 +103,7 @@ def test_validate_password():
             "password": "janedo"
     
         }
-    response = client.post("/customer/", json=new_cus)
+    response = client.post("/customer/sign-up", json=new_cus)
     assert response.status_code == 422
     new_cus = {
                 "firstName": "Jane",
@@ -116,7 +116,7 @@ def test_validate_password():
                 "password": "DDDD"
         
             }
-    response = client.post("/customer/", json=new_cus)
+    response = client.post("/customer/sign-up", json=new_cus)
     assert response.status_code == 422
     
     new_cus = {
@@ -130,7 +130,7 @@ def test_validate_password():
                 "password": "janeDoe"
         
             }
-    response = client.post("/customer/", json=new_cus)
+    response = client.post("/customer/sign-up", json=new_cus)
     assert response.status_code == 201
 
 def test_validate_username():
@@ -145,7 +145,7 @@ def test_validate_username():
             "password": "janeDoe"
     
         }
-    response = client.post("/customer/", json=new_cus)
+    response = client.post("/customer/sign-up", json=new_cus)
     assert response.status_code == 201
     new_cus = {
                 "firstName": "Jane",
@@ -158,5 +158,8 @@ def test_validate_username():
                 "password": "janeDoe"
         
             }
-    response = client.post("/customer/", json=new_cus)
+    response = client.post("/customer/sign-up", json=new_cus)
     assert response.status_code == 422
+
+
+    
